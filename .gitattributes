@@ -1,3 +1,6 @@
+# Ignore SDL2 files
+SDL2-2.0.5/* linguist-vendored
+
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
