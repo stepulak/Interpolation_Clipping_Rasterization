@@ -25,7 +25,6 @@ BitmapFont::~BitmapFont()
 	SDL_DestroyTexture(m_bitmap);
 }
 
-
 int BitmapFont::GetLineWidth(const std::string& line, unsigned int fontSize) const
 {
 	unsigned int width = 0;

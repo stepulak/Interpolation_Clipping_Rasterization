@@ -102,8 +102,8 @@ void DDABresenhamLineInterpolation::DrawContent() const
 
 	if (NumberOfFilledPoints() > 0) {
 		bool stepMode = NumberOfFilledPoints() == 2 && IsStepMode();
-		const auto&& p1 = GetPoint(0).ToPoint();
-		const auto&& p2 = GetPoint(1).ToPoint();
+		auto&& p1 = GetPoint(0).ToPoint();
+		auto&& p2 = GetPoint(1).ToPoint();
 
 		if (m_ddaEnabled) {
 			DrawDDA(p1.x, p1.y, p2.x, p2.y, stepMode);

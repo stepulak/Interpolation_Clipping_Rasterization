@@ -73,7 +73,7 @@ CyrusBeckClipping::Line CyrusBeckClipping::ClipLine(const Point & p, const Point
 	}
 	if (tmin < tmax) {
 		auto lineParam = [&](float t) {
-			return std::move(p + (pqVec * t));
+			return p + (pqVec * t);
 		};
 
 		return { lineParam(tmin), lineParam(tmax) };

@@ -103,12 +103,12 @@ void RasterGridRunnable::DrawLinesFan(bool connectFirstLast, unsigned int lastPo
 {
 	Utils::DrawLineFan(GetRenderer(), m_points, m_pointSize);
 	if (connectFirstLast) {
-		const auto&& f = m_points.front().ToPoint();
-		const auto&& l = m_points.back().ToPoint();
+		auto&& f = m_points.front().ToPoint();
+		auto&& l = m_points.back().ToPoint();
 		Utils::DrawLine(GetRenderer(), f.x, f.y, l.x, l.y, m_pointSize);
 	}
 	if (lastPointSize > m_pointSize) {
-		const auto&& l = m_points.back().ToPoint();
+		auto&& l = m_points.back().ToPoint();
 		Utils::DrawPoint(GetRenderer(), l.x - lastPointSize/2, l.y - lastPointSize / 2, lastPointSize);
 	}
 }

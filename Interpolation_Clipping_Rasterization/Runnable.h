@@ -22,7 +22,7 @@ protected:
 	template<typename ...Args>
 	static inline void DrawText(Args&&... args) {
 		if (Font.get() != nullptr) {
-			Font->DrawLine(args...);
+			Font->DrawLine(std::forward(args...));
 		}
 		else {
 			throw std::runtime_error("Font is not initialized");
