@@ -21,7 +21,7 @@ bool CircleEllipseInterpolation::HandleKeyPress(const SDL_Keycode& kc)
 
 void CircleEllipseInterpolation::DrawAppInfo() const
 {
-	auto&& ss = GetAppInfo();
+	auto ss = GetAppInfo();
 	ss << "[W] SHAPE: " << (m_circleEnabled ? "CIRCLE\n" : "ELLIPSE\n");
 	DrawText(ss.str(), 18, 0, 0);
 }

@@ -85,7 +85,7 @@ void LineSeedFill::Clear()
 
 void LineSeedFill::DrawAppInfo() const
 {
-	auto&& ss = GetAppInfo();
+	auto ss = GetAppInfo();
 	if (PolygonLinesFilled()) {
 		if (!m_initSeedSet) {
 			ss << "SELECT INIT SEED POSITION\n";

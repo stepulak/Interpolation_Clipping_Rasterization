@@ -91,7 +91,7 @@ void SutherlandHodgmanClipping::ClipNextPoint()
 
 void SutherlandHodgmanClipping::DrawAppInfo() const
 {
-	auto&& ss = GetAppInfo();
+	auto ss = GetAppInfo();
 	ss << "[W] SAVE POLY. VERTICES\n";
 	DrawText(ss.str(), 18, 0, 0);
 }

@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <vector>
+#include <climits>
 
 #include "Vector2.h"
 
@@ -81,7 +82,7 @@ namespace Utils {
 	template<typename T>
 	static void DrawLineFan(SDL_Renderer* rend, const std::vector<Vector2<T>>& points, int lineThickness = 1, unsigned int limit = INT_MAX) {
 		for (unsigned int i = 1; i < points.size() && i < limit; i++) {
-			auto&& p = points[i].ToPoint(), &q = points[i - 1].ToPoint();
+			auto&& p = points[i].ToPoint(), &&q = points[i - 1].ToPoint();
 			Utils::DrawLine(rend, p.x, p.y, q.x, q.y, lineThickness);
 		}
 	}

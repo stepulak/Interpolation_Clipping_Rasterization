@@ -44,24 +44,6 @@ CohenSutherlandClipping::CollisionCode CohenSutherlandClipping::GetPositionCode(
 	else {
 		return MID;
 	}
-
-	/*
-	// This code not work properly...
-	unsigned char c = 0;
-	if (p.x < wx) {
-	c |= MID_LEFT;
-	}
-	else if (p.x > wx + ww) {
-	c |= MID_RIGHT;
-	}
-	else if (p.y < wy) {
-	c |= BOT_MID;
-	}
-	else if (p.y > wy + wh) {
-	c |= TOP_MID;
-	}
-	return static_cast<Code>(c);
-	*/
 }
 
 CohenSutherlandClipping::Point CohenSutherlandClipping::ClipSecondEndPoint(Point p, Point q, unsigned int& steps) const

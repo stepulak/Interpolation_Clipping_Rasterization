@@ -21,7 +21,7 @@ bool DDABresenhamLineInterpolation::HandleKeyPress(const SDL_Keycode& kc)
 
 void DDABresenhamLineInterpolation::DrawAppInfo() const
 {
-	auto&& ss = GetAppInfo();
+	auto ss = GetAppInfo();
 	ss << "[W] LINE ALGORITHM: " << (m_ddaEnabled ? "DDA\n" : "BRESENHAM\n");
 	DrawText(ss.str(), 18, 0, 0);
 }
@@ -73,7 +73,7 @@ void DDABresenhamLineInterpolation::DrawBresenham(int x0, int y0, int x1, int y1
 		dy = -dy;
 	}
 
-	float de = abs(dy / dx);
+	float de = fabs(dy / dx);
 	float e = 0;
 	int addy = (dy < 0 ? -1 : 1) * GetPointSize();
 

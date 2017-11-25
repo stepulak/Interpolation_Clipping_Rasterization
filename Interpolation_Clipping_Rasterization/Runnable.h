@@ -5,6 +5,7 @@
 #include "BitmapFont.h"
 #include <memory>
 #include <sstream>
+#include <utility>
 
 // Base runnable class
 class Runnable {
@@ -22,7 +23,7 @@ protected:
 	template<typename ...Args>
 	static inline void DrawText(Args&&... args) {
 		if (Font.get() != nullptr) {
-			Font->DrawLine(std::forward(args...));
+			Font->DrawLine(std::forward<decltype(args)>(args)...);
 		}
 		else {
 			throw std::runtime_error("Font is not initialized");
@@ -31,7 +32,7 @@ protected:
 	
 public:
 
-	static inline void SetupFont(std::unique_ptr<BitmapFont>& bf) { Font.swap(bf); }
+	static inline void SetupFont(std::unique_ptr<BitmapFont>&& bf) { Font.swap(bf); }
 
 private:
 

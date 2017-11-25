@@ -81,7 +81,7 @@ bool RasterGridRunnable::HandleMouseMotion(Sint32 x, Sint32 y)
 
 std::stringstream RasterGridRunnable::GetAppInfo() const
 {
-	auto&& ss = Runnable::GetAppInfo();
+	auto ss = Runnable::GetAppInfo();
 	ss << "[E] STEPMODE: " << (m_stepMode ? "ACTIVE" : "INACTIVE") << '\n';
 	ss << "[S] NEXT STEP\n";
 	ss << "[C] CLEAR\n";
@@ -96,7 +96,7 @@ std::stringstream RasterGridRunnable::GetAppInfo() const
 		pointIndex++;
 	}
 
-	return std::move(ss);
+	return ss;
 }
 
 void RasterGridRunnable::DrawLinesFan(bool connectFirstLast, unsigned int lastPointSize) const

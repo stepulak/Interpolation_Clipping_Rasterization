@@ -1,5 +1,11 @@
 #include "FramebufferRunnable.h"
 
+const FramebufferRunnable::Color FramebufferRunnable::NONE_COLOR;
+const FramebufferRunnable::Color FramebufferRunnable::BLACK;
+const FramebufferRunnable::Color FramebufferRunnable::WHITE;
+const FramebufferRunnable::Color FramebufferRunnable::PURPLE;
+const FramebufferRunnable::Color FramebufferRunnable::FILL_COLOR;
+
 FramebufferRunnable::FramebufferRunnable(SDL_Window* w, SDL_Renderer* r, unsigned int pointSize, unsigned int maxPoints)
 	: RasterGridRunnable(w, r, pointSize, maxPoints)
 {
