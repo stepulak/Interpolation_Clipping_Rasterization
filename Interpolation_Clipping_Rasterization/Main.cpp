@@ -31,11 +31,11 @@ int main(int argc, char** argv) {
 
         AppSelector d(window, renderer);
         d.Start();
-        
+
         Utils::DestroyWindowRenderer(window, renderer); 
     } 
     catch (std::exception& ex) {
         std::cout << "Exeption: " << ex.what() << std::endl;
     }
-	return 0;
+    return 0;
 }

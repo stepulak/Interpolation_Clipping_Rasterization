@@ -34,7 +34,7 @@ struct Vector2 {
     // "Point" function
     T GetPointDistance(const Vector2<T>& v2) const { return (*this - v2).GetLength(); }
     Vector2<T> CountPointMiddle(const Vector2<T>& v2) const { return Vector2((x + v2.x) / 2, (y + v2.y) / 2); }
-    
+
     SDL_Point ToPoint() const { return{ static_cast<int>(x), static_cast<int>(y) }; }
 
     std::string ToString() const {
@@ -68,7 +68,7 @@ struct Vector2 {
     // constant multiplication
     Vector2<T> operator*(T k) const { return Vector2(static_cast<T>(x * k), static_cast<T>(y * k)); }
     Vector2<T>& operator*=(T k) { *this = *this * k; return *this; }
-    
+
     Vector2<T> operator/(T k) const { return Vector2(static_cast<T>(x / k), static_cast<T>(y / k)); }
     Vector2<T>& operator/=(T k) { *this = *this / k; return *this; }
 
