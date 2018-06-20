@@ -1,5 +1,4 @@
-#ifndef RASTER_GRID_RUNNABLE_H
-#define RASTER_GRID_RUNNABLE_H
+#pragma once
 
 #include "Runnable.h"
 
@@ -7,9 +6,9 @@
 class RasterGridRunnable : public Runnable {
 protected:
 
-	typedef Utils::Vec2f Point;
-	typedef Point Vec;
-	typedef std::pair<Point, Point> Line;
+	using Point = Utils::Vec2f;
+	using Vec = Point ;
+	using Line = std::pair<Point, Point>;
 
 private:
 
@@ -17,41 +16,39 @@ private:
 	const unsigned int m_pointSize;
 	const unsigned int m_maxPoints;
 
-	// Step mode
 	bool m_stepMode;
 	unsigned int m_currentStep;
 
 protected:
 
-	static const int POINT_INVALID = -1;
+	static constexpr int POINT_INVALID = -1;
 
-	inline unsigned int GetPointSize() const { return m_pointSize; }
+	unsigned int GetPointSize() const { return m_pointSize; }
 
-	inline bool IsStepMode() const { return m_stepMode; }
-	inline unsigned int GetCurrentStep() const { return m_currentStep; }
+	bool IsStepMode() const { return m_stepMode; }
+	unsigned int GetCurrentStep() const { return m_currentStep; }
 
-	inline unsigned int NumberOfFilledPoints() const { return m_points.size() - 1; }
-	inline bool AllPointsFilled() const { return NumberOfFilledPoints() == m_maxPoints; }
+	unsigned int NumberOfFilledPoints() const { return m_points.size() - 1; }
+	bool AllPointsFilled() const { return NumberOfFilledPoints() == m_maxPoints; }
 
-	inline Point& GetPoint(int index) { return m_points[index]; }
-	inline const Point& GetPoint(int index) const { return m_points[index]; }
+	Point& GetPoint(int index) { return m_points[index]; }
+	const Point& GetPoint(int index) const { return m_points[index]; }
 
-	inline void RemovePoint(int index) { m_points.erase(m_points.begin() + index); }
-	inline void PushBackPoint(const Point& p) { m_points.push_back(p); }
-	inline void InsertPointAt(const Point& p, int index) { m_points.insert(m_points.begin() + index, p); }
-	inline void ReplacePoint(const Point& p, int index) { m_points[index] = p; }
-
-	virtual bool HandleKeyPress(const SDL_Keycode& kc) override;
-	virtual bool HandleMouseClick(Uint8 button, Sint32 x, Sint32 y) override;
-	virtual bool HandleMouseMotion(Sint32 x, Sint32 y) override;
-
-	virtual std::stringstream GetAppInfo() const override;
+	void RemovePoint(int index) { m_points.erase(m_points.begin() + index); }
+	void PushBackPoint(const Point& p) { m_points.push_back(p); }
+	void InsertPointAt(const Point& p, int index) { m_points.insert(m_points.begin() + index, p); }
+	void ReplacePoint(const Point& p, int index) { m_points[index] = p; }
+    
+    bool HandleKeyPress(const SDL_Keycode& kc) override;
+    bool HandleMouseClick(Uint8 button, Sint32 x, Sint32 y) override;
+    bool HandleMouseMotion(Sint32 x, Sint32 y) override;
+    std::stringstream GetAppInfo() const override;
 	
-	inline Point GetInvalidPoint() const { return Point(1.f * POINT_INVALID, 1.f * POINT_INVALID); }
-	inline void ClearPoint(Point& p) { p = GetInvalidPoint(); }
+	Point GetInvalidPoint() const { return Point(1.f * POINT_INVALID, 1.f * POINT_INVALID); }
+	void ClearPoint(Point& p) { p = GetInvalidPoint(); }
 
 	// Draw point calibrated in the raster grid
-	inline void DrawPoint(int x, int y) const {
+	void DrawPoint(int x, int y) const {
 		Utils::DrawPoint(GetRenderer(), x - (x % m_pointSize), y - (y % m_pointSize), m_pointSize);
 	}
 
@@ -71,7 +68,4 @@ protected:
 public:
 
 	RasterGridRunnable(SDL_Window* w, SDL_Renderer* r, unsigned int pointSize, unsigned int maxPoints = UINT_MAX);
-	virtual ~RasterGridRunnable() {}
 };
-
-#endif

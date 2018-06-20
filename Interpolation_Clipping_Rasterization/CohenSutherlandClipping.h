@@ -1,5 +1,4 @@
-#ifndef COHEN_SUTHERLAND_CLIPPING_H
-#define COHEN_SUTHERLAND_CLIPPING_H
+#pragma once
 
 #include "RasterGridRunnable.h"
 
@@ -18,9 +17,9 @@ private:
 		BOT_RIGHT = 6
 	};
 
-	static const int WINDOW_BORDER_THICKNESS = 2;
-	static const int WINDOW_WIDTH = 300;
-	static const int WINDOW_HEIGHT = 200;
+	static constexpr int WINDOW_BORDER_THICKNESS = 2;
+	static constexpr int WINDOW_WIDTH = 300;
+	static constexpr int WINDOW_HEIGHT = 200;
 
 	SDL_Rect m_clippingWindow;
 
@@ -28,7 +27,6 @@ private:
 	
 	// Clip line from q point
 	Point ClipSecondEndPoint(Point p, Point q, unsigned int& steps) const;
-
 	Line ClipLine(const Point& p, const Point& q, bool stepMode) const;
 
 	void DrawAppInfo() const;
@@ -37,9 +35,6 @@ private:
 public:
 
 	CohenSutherlandClipping(SDL_Window* w, SDL_Renderer* r);
-	virtual ~CohenSutherlandClipping() {}
 
-	virtual void DrawContent() const override;
+    void DrawContent() const override;
 };
-
-#endif

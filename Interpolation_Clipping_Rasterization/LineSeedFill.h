@@ -1,5 +1,4 @@
-#ifndef LINE_SEED_FILL_H
-#define LINE_SEED_FILL_H
+#pragma once
 
 #include "FramebufferRunnable.h"
 #include <queue>
@@ -24,20 +23,19 @@ private:
 		}
 	};
 
-	static const float NEXT_STEP_TIME;
+	static constexpr float NEXT_STEP_TIME = 0.01f;
 
 	std::queue<FillInfo> m_seedQueue;
 	bool m_initSeedSet;
 	float m_stepTimer;
 
-	virtual bool HandleKeyPress(const SDL_Keycode& kc) override;
-	virtual bool HandleMouseClick(Uint8 button, Sint32 x, Sint32 y) override;
+    bool HandleKeyPress(const SDL_Keycode& kc) override;
+    bool HandleMouseClick(Uint8 button, Sint32 x, Sint32 y) override;
 
-	inline bool PointInGrid(int x, int y) const
+    bool PointInGrid(int x, int y) const
 	{ return x >= 0 && y >= 0 && x < static_cast<int>(FramebufferWidth()) && y < static_cast<int>(FramebufferHeight()); }
 
-	inline bool CanContinueFill(int x, int y) const
-	{ return PointInGrid(x, y) && GetColor(x, y) != FILL_COLOR; }
+    bool CanContinueFill(int x, int y) const { return PointInGrid(x, y) && GetColor(x, y) != FILL_COLOR; }
 
 	// Try to expand filling in given position (if possible), or check, if another may happen soon
 	void TryToExpandFilling(bool& expanded, int x, int y, bool parentTop);
@@ -51,10 +49,7 @@ private:
 public:
 
 	LineSeedFill(SDL_Window* w, SDL_Renderer* r);
-	virtual ~LineSeedFill() {}
 
-	virtual void UpdateContent() override;
-	virtual void DrawContent() const override;
+    void UpdateContent() override;
+    void DrawContent() const override;
 };
-
-#endif

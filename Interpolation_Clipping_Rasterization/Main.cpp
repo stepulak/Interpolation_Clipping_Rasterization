@@ -14,6 +14,7 @@
 */
 
 #include "AppSelector.h"
+#include <iostream>
 
 namespace {
 	const std::string BitmapFontFilename = "bitmapfont.png";
@@ -21,15 +22,20 @@ namespace {
 }
 
 int main(int argc, char** argv) {
-	Utils::InitRandom();
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-	Utils::InitWindowRenderer("Interpolation, clipping, rasterization", window, renderer, 1000, 600);
-	Runnable::SetupFont(std::make_unique<BitmapFont>(renderer, BitmapFontFilename, 16, DefaultAlphabet));
+    try {
+        Utils::InitRandom();
+        SDL_Window* window;
+        SDL_Renderer* renderer;
+        Utils::InitWindowRenderer("Interpolation, clipping, rasterization", window, renderer, 1000, 600);
+        Runnable::SetupFont(std::make_unique<BitmapFont>(renderer, BitmapFontFilename, 16, DefaultAlphabet));
 
-	AppSelector d(window, renderer);
-	d.Start();
-
-	Utils::DestroyWindowRenderer(window, renderer); 
+        AppSelector d(window, renderer);
+        d.Start();
+        
+        Utils::DestroyWindowRenderer(window, renderer); 
+    } 
+    catch (std::exception& ex) {
+        std::cout << "Exeption: " << ex.what() << std::endl;
+    }
 	return 0;
 }

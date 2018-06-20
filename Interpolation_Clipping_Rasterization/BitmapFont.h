@@ -1,5 +1,4 @@
-#ifndef BITMAPFONT_H
-#define BITMAPFONT_H
+#pragma once
 
 #include <array>
 #include <SDL2/SDL.h>
@@ -8,9 +7,9 @@
 class BitmapFont {
 private:
 
-	static const int CHAR_WIDTH_OFFSET = -8;
-	static const int ALPHABET_START = ' ';
-	static const int ALPHABET_END = '~';
+	static constexpr int CHAR_WIDTH_OFFSET = -8;
+	static constexpr int ALPHABET_START = ' ';
+	static constexpr int ALPHABET_END = '~';
 	static constexpr int ALPHABET_SIZE = ALPHABET_END - ALPHABET_START + 1;
 
 	std::array<int, ALPHABET_SIZE> m_alphabet;
@@ -19,8 +18,8 @@ private:
 	SDL_Texture* m_bitmap;
 	SDL_Renderer* m_renderer;
 
-	inline bool InsideAlphabet(char c) const { return c >= ALPHABET_START && c <= ALPHABET_END; }
-	inline int GetCharWidthFontSize(int fontSize) const { return fontSize + CHAR_WIDTH_OFFSET; }
+    bool InsideAlphabet(char c) const { return c >= ALPHABET_START && c <= ALPHABET_END; }
+    int GetCharWidthFontSize(int fontSize) const { return fontSize + CHAR_WIDTH_OFFSET; }
 
 public:
 	
@@ -34,13 +33,10 @@ public:
 
 	virtual ~BitmapFont();
 
-	inline int GetBitmapCharWidth() const { return m_bitmapCharWidth; }
-	inline SDL_Renderer* GetRenderer() { return m_renderer; }
-	inline void SetRenderer(SDL_Renderer* rend) { m_renderer = rend; }
-	
-	int GetLineWidth(const std::string& line, unsigned int fontSize) const;
+    int GetBitmapCharWidth() const { return m_bitmapCharWidth; }
+    SDL_Renderer* GetRenderer() { return m_renderer; }
+    void SetRenderer(SDL_Renderer* rend) { m_renderer = rend; }
 
+	int GetLineWidth(const std::string& line, unsigned int fontSize) const;
 	void DrawLine(const std::string& line, unsigned int fontSize, int posX, int posY, bool isCentered = false) const;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef APP_SELECTOR_H
-#define APP_SELECTOR_H
+#pragma once
 
 #include "Runnable.h"
 
@@ -12,14 +11,12 @@ private:
 		app->Start();
 	}
 
-	virtual bool HandleKeyPress(const SDL_Keycode& kc) override;
+    bool HandleKeyPress(const SDL_Keycode& kc) override;
 	void DrawAppInfo() const;
 
 public:
 
 	AppSelector(SDL_Window* w, SDL_Renderer* r);
 	
-	virtual void DrawContent() const override;
+    void DrawContent() const override;
 };
-
-#endif

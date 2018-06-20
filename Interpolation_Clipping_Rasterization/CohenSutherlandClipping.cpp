@@ -41,9 +41,7 @@ CohenSutherlandClipping::CollisionCode CohenSutherlandClipping::GetPositionCode(
 	else if (p.x > wx + ww && p.y > wy && p.y < wy + wh) {
 		return MID_RIGHT;
 	}
-	else {
-		return MID;
-	}
+    return MID;
 }
 
 CohenSutherlandClipping::Point CohenSutherlandClipping::ClipSecondEndPoint(Point p, Point q, unsigned int& steps) const

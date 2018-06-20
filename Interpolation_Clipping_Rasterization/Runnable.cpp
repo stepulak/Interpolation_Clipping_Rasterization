@@ -16,7 +16,8 @@ Runnable::Runnable(SDL_Window* w, SDL_Renderer* r)
 	}
 }
 
-void Runnable::DelayAndCountDeltaTime(Uint32 t1, Uint32 t2) {
+void Runnable::DelayAndCountDeltaTime(Uint32 t1, Uint32 t2) 
+{
 	Uint32 frametime = static_cast<Uint32>(1000.0f / FPS);
 
 	if ((t2 - t1) < frametime) {
@@ -73,7 +74,8 @@ std::stringstream Runnable::GetAppInfo() const
 	return ss;
 }
 
-void Runnable::HandleInput() {
+void Runnable::HandleInput() 
+{
 	for (SDL_Event e; SDL_PollEvent(&e);) {
 		if (e.type == SDL_QUIT) {
 			m_shouldQuit = true;
@@ -93,7 +95,8 @@ void Runnable::HandleInput() {
 	}
 }
 
-void Runnable::Start() {
+void Runnable::Start() 
+{
 	Uint32 ticks;
 
 	while (!m_shouldQuit) {

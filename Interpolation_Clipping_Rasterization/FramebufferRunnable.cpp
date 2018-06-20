@@ -1,11 +1,5 @@
 #include "FramebufferRunnable.h"
 
-const FramebufferRunnable::Color FramebufferRunnable::NONE_COLOR;
-const FramebufferRunnable::Color FramebufferRunnable::BLACK;
-const FramebufferRunnable::Color FramebufferRunnable::WHITE;
-const FramebufferRunnable::Color FramebufferRunnable::PURPLE;
-const FramebufferRunnable::Color FramebufferRunnable::FILL_COLOR;
-
 FramebufferRunnable::FramebufferRunnable(SDL_Window* w, SDL_Renderer* r, unsigned int pointSize, unsigned int maxPoints)
 	: RasterGridRunnable(w, r, pointSize, maxPoints)
 {
@@ -79,15 +73,15 @@ void FramebufferRunnable::DrawLinesFan(bool connectFirstLast, unsigned int lastP
 	};
 
 	for (unsigned int i = 1; i <= NumberOfFilledPoints(); i++) {
-		auto&& p0 = GetPoint(i - 1).ToPoint();
-		auto&& p1 = GetPoint(i).ToPoint();
+		auto p0 = GetPoint(i - 1).ToPoint();
+		auto p1 = GetPoint(i).ToPoint();
 		Utils::DrawLineGeneric(GetRenderer(), drawPoint, p0.x, p0.y, p1.x, p1.y, GetPointSize(), 1.f);
 	}
 
-	auto&& l = GetPoint(NumberOfFilledPoints()).ToPoint();
+	auto l = GetPoint(NumberOfFilledPoints()).ToPoint();
 
 	if (connectFirstLast) {
-		auto&& f = GetPoint(0).ToPoint();
+		auto f = GetPoint(0).ToPoint();
 		Utils::DrawLineGeneric(GetRenderer(), drawPoint, f.x, f.y, l.x, l.y, GetPointSize(), 1.f);
 	}
 
@@ -132,7 +126,7 @@ void FramebufferRunnable::DrawFramebuffer() const
 {
 	Utils::PushColor(GetRenderer());
 
-	Color currentColor = 0;
+	Color currentColor = NONE_COLOR;
 	int columnIndex = 0;
 	int ptSize = GetPointSize();
 

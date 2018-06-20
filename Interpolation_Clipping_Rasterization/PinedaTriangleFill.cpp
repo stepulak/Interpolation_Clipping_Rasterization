@@ -1,7 +1,5 @@
 #include "PinedaTriangleFill.h"
 
-const float PinedaTriangleFill::NEXT_STEP_TIME = 0.01f;
-
 PinedaTriangleFill::PinedaTriangleFill(SDL_Window* w, SDL_Renderer* r)
 	: FramebufferRunnable(w, r, { 400, 100, DRAW_AREA_W, DRAW_AREA_H }, 5, 3)
 {

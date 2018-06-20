@@ -1,5 +1,4 @@
-#ifndef PINEDA_TRIANGLE_FILL_H
-#define PINEDA_TRIANGLE_FILL_H
+#pragma once
 
 #include "FramebufferRunnable.h"
 
@@ -7,9 +6,9 @@
 class PinedaTriangleFill : public FramebufferRunnable {
 private:
 
-	static const float NEXT_STEP_TIME;
-	static const int DRAW_AREA_W = 400;
-	static const int DRAW_AREA_H = 400;
+	static constexpr float NEXT_STEP_TIME = 0.01f;
+	static constexpr int DRAW_AREA_W = 400;
+	static constexpr int DRAW_AREA_H = 400;
 
 	SDL_Point m_currentPoint;
 	SDL_Point m_min;
@@ -17,24 +16,20 @@ private:
 	int m_xDirection;
 	float m_timer;
 
-	virtual bool HandleKeyPress(const SDL_Keycode& kc) override;
+    bool HandleKeyPress(const SDL_Keycode& kc) override;
 
-	inline bool CanContinueFilling() const { return m_currentPoint.x < m_max.x || m_currentPoint.y < m_max.y; }
+    bool CanContinueFilling() const { return m_currentPoint.x < m_max.x || m_currentPoint.y < m_max.y; }
 
 	void Clear();
 	void SetupInitialFillValues();
 	bool PerformOneFill();
-
 	void DrawCurrentPointInteractive() const;
 	void DrawAppInfo() const;
 	
 public:
 	
 	PinedaTriangleFill(SDL_Window* w, SDL_Renderer* r);
-	virtual ~PinedaTriangleFill() {}
 
-	virtual void UpdateContent() override;
-	virtual void DrawContent() const override;
+    void UpdateContent() override;
+    void DrawContent() const override;
 };
-
-#endif

@@ -1,7 +1,5 @@
 #include "LineSeedFill.h"
 
-const float LineSeedFill::NEXT_STEP_TIME = 0.01f;
-
 LineSeedFill::LineSeedFill(SDL_Window* w, SDL_Renderer* r)
 	: FramebufferRunnable(w, r, 10)
 {
