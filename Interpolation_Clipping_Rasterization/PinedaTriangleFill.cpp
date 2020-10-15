@@ -30,7 +30,7 @@ void PinedaTriangleFill::SetupInitialFillValues()
 	m_min = { static_cast<int>(FramebufferWidth()), static_cast<int>(FramebufferHeight()) };
 	m_max = { 0, 0 };
 
-	for (unsigned int i = 0; i <= NumberOfFilledPoints(); i++) {
+	for (uint i = 0; i <= NumberOfFilledPoints(); i++) {
 		auto&& p = GetPointAsIndex(i);
 		
 		if (m_min.x > p.x) {

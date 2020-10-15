@@ -13,7 +13,6 @@
 		- Pineda's algorithm for triangle rasterization (min-max mechanism)
 */
 
-#include "AppSelector.h"
 #include <iostream>
 
 namespace {

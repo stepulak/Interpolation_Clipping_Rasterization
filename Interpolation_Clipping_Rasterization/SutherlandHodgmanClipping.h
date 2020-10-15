@@ -9,9 +9,9 @@ private:
 
     bool m_polygonInserted;
     bool m_clippingLineInserted;
-    unsigned int m_clippingLineX;
+    uint m_clippingLineX;
     bool m_nextStep;
-    unsigned int m_lastPoint;
+    uint m_lastPoint;
     bool m_intersectionFound; // true if intersection was found
     bool m_pointClipped; // true if point was clipped
     bool m_drawClippingLine;

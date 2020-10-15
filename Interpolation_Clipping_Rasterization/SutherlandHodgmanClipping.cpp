@@ -56,7 +56,7 @@ bool SutherlandHodgmanClipping::HandleKeyPress(const SDL_Keycode& kc)
 
 void SutherlandHodgmanClipping::FindNextIntersection()
 {
-	for (unsigned int i = m_lastPoint; i < NumberOfFilledPoints(); i++) {
+	for (uint i = m_lastPoint; i < NumberOfFilledPoints(); i++) {
 		auto& p0 = GetPoint(i);
 		auto& p1 = GetPoint(i + 1);
 
@@ -76,7 +76,7 @@ void SutherlandHodgmanClipping::FindNextIntersection()
 
 void SutherlandHodgmanClipping::ClipNextPoint()
 {
-	for (unsigned int i = m_lastPoint; i < NumberOfFilledPoints(); i++) {
+	for (uint i = m_lastPoint; i < NumberOfFilledPoints(); i++) {
 		if (GetPoint(i).x > m_clippingLineX) {
 			// clip the point
 			RemovePoint(i);

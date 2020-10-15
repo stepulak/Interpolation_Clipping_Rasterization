@@ -37,7 +37,7 @@ void CyrusBeckClipping::CreateClippingLines()
 {
 	m_clippingLines.reserve(m_clippingPolygon.size() - 1);
 
-	for (unsigned int i = 0; i < m_clippingPolygon.size() - 1; i++) {
+	for (uint i = 0; i < m_clippingPolygon.size() - 1; i++) {
 		const auto& p = m_clippingPolygon[i];
 		const auto& q = m_clippingPolygon[i + 1];
 		auto&& mid = p.CountPointMiddle(q);
@@ -54,7 +54,7 @@ CyrusBeckClipping::Line CyrusBeckClipping::ClipLine(const Point & p, const Point
 	const auto pqVec = Vec(p, q);
 	auto steps = stepMode ? GetCurrentStep() : INT_MAX;
 
-	for (unsigned int i = 0; i < m_clippingPolygon.size() - 1 && tmin < tmax && steps > 0; i++) {
+	for (uint i = 0; i < m_clippingPolygon.size() - 1 && tmin < tmax && steps > 0; i++) {
 		const auto clipLineNormal = Vec(m_clippingPolygon[i + 1], m_clippingPolygon[i]).CountNormal();
 		const auto normalsResult = clipLineNormal.Dot(pqVec);
 

@@ -44,7 +44,7 @@ CohenSutherlandClipping::CollisionCode CohenSutherlandClipping::GetPositionCode(
     return MID;
 }
 
-CohenSutherlandClipping::Point CohenSutherlandClipping::ClipSecondEndPoint(Point p, Point q, unsigned int& steps) const
+CohenSutherlandClipping::Point CohenSutherlandClipping::ClipSecondEndPoint(Point p, Point q, uint& steps) const
 {
 	Point p1 = p;
 	if (GetPositionCode(q) == MID) {

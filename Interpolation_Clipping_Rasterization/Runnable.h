@@ -39,7 +39,7 @@ public:
 protected:
 
     template<typename ...Args>
-    static inline void DrawText(Args&&... args) 
+    static void DrawText(Args&&... args) 
     {
         if (Font.get() != nullptr) {
             Font->DrawLine(std::forward<decltype(args)>(args)...);

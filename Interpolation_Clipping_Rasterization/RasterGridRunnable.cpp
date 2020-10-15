@@ -1,6 +1,6 @@
 #include "RasterGridRunnable.h"
 
-RasterGridRunnable::RasterGridRunnable(SDL_Window* w, SDL_Renderer* r, unsigned int pointSize, unsigned int maxPoints)
+RasterGridRunnable::RasterGridRunnable(SDL_Window* w, SDL_Renderer* r, uint pointSize, uint maxPoints)
 	: Runnable(w, r),
 	m_stepMode(false),
 	m_pointSize(pointSize),
@@ -88,7 +88,7 @@ std::stringstream RasterGridRunnable::GetAppInfo() const
 
 	int pointIndex = 1;
 	for (const auto& p : m_points) {
-		if (static_cast<unsigned int>(pointIndex) > m_maxPoints) {
+		if (static_cast<uint>(pointIndex) > m_maxPoints) {
 			break;
 		}
 		auto point = (p / static_cast<float>(m_pointSize)).ToPoint();
@@ -99,7 +99,7 @@ std::stringstream RasterGridRunnable::GetAppInfo() const
 	return ss;
 }
 
-void RasterGridRunnable::DrawLinesFan(bool connectFirstLast, unsigned int lastPointSize) const
+void RasterGridRunnable::DrawLinesFan(bool connectFirstLast, uint lastPointSize) const
 {
 	Utils::DrawLineFan(GetRenderer(), m_points, m_pointSize);
 	if (connectFirstLast) {
@@ -113,7 +113,7 @@ void RasterGridRunnable::DrawLinesFan(bool connectFirstLast, unsigned int lastPo
 	}
 }
 
-void RasterGridRunnable::DrawPoints(unsigned int pointSize) const
+void RasterGridRunnable::DrawPoints(uint pointSize) const
 {
 	if (pointSize < m_pointSize) {
 		pointSize = m_pointSize;

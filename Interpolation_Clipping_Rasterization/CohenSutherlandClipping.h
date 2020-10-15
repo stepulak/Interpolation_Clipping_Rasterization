@@ -26,7 +26,7 @@ private:
     CollisionCode GetPositionCode(const Point& p) const;
 
     // Clip line from q point
-    Point ClipSecondEndPoint(Point p, Point q, unsigned int& steps) const;
+    Point ClipSecondEndPoint(Point p, Point q, uint& steps) const;
     Line ClipLine(const Point& p, const Point& q, bool stepMode) const;
 
     void DrawAppInfo() const;

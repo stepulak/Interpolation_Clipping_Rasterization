@@ -33,8 +33,8 @@ private:
 protected:
 
     bool PolygonLinesFilled() const { return m_polygonLinesFilled; }
-    unsigned int FramebufferWidth() const { return m_framebuffer.size(); }
-    unsigned int FramebufferHeight() const { return m_framebuffer[0].size(); }
+    uint FramebufferWidth() const { return m_framebuffer.size(); }
+    uint FramebufferHeight() const { return m_framebuffer[0].size(); }
     const SDL_Rect& GetDrawArea() const { return m_drawArea; }
 
     Color GetColor(int x, int y) const { return m_framebuffer[x][y]; }
@@ -49,7 +49,7 @@ protected:
     bool HandleKeyPress(const SDL_Keycode& kc) override;
     bool HandleMouseClick(Uint8 button, Sint32 x, Sint32 y) override;
     bool HandleMouseMotion(Sint32 x, Sint32 y) override;
-    void DrawLinesFan(bool connectFirstLast = false, unsigned int lastPointSize = 0) const override;
+    void DrawLinesFan(bool connectFirstLast = false, uint lastPointSize = 0) const override;
 
     void FillPolygonLinesIntoFramebuffer();
     void ClearFramebuffer();
@@ -58,9 +58,9 @@ protected:
 
 public:
 
-    FramebufferRunnable(SDL_Window* w, SDL_Renderer* r, unsigned int pointSize,
-        unsigned int maxPoints = UINT_MAX);
+    FramebufferRunnable(SDL_Window* w, SDL_Renderer* r, uint pointSize,
+        uint maxPoints = UINT_MAX);
 
     FramebufferRunnable(SDL_Window* w, SDL_Renderer* r, const SDL_Rect& drawArea,
-        unsigned int pointSize, unsigned int maxPoints = UINT_MAX);
+        uint pointSize, uint maxPoints = UINT_MAX);
 };

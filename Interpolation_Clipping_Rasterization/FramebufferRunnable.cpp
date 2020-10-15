@@ -1,6 +1,6 @@
 #include "FramebufferRunnable.h"
 
-FramebufferRunnable::FramebufferRunnable(SDL_Window* w, SDL_Renderer* r, unsigned int pointSize, unsigned int maxPoints)
+FramebufferRunnable::FramebufferRunnable(SDL_Window* w, SDL_Renderer* r, uint pointSize, uint maxPoints)
 	: RasterGridRunnable(w, r, pointSize, maxPoints)
 {
 	m_drawArea = { 0, 0, GetWindowWidth(), GetWindowHeight() };
@@ -8,7 +8,7 @@ FramebufferRunnable::FramebufferRunnable(SDL_Window* w, SDL_Renderer* r, unsigne
 }
 
 FramebufferRunnable::FramebufferRunnable(SDL_Window* w, SDL_Renderer* r, const SDL_Rect& drawArea,
-	unsigned int pointSize, unsigned int maxPoints)
+	uint pointSize, uint maxPoints)
 	: RasterGridRunnable(w, r, pointSize, maxPoints),
 	m_drawArea(drawArea)
 {	
@@ -63,7 +63,7 @@ bool FramebufferRunnable::HandleMouseMotion(Sint32 x, Sint32 y)
 	return false;
 }
 
-void FramebufferRunnable::DrawLinesFan(bool connectFirstLast, unsigned int lastPointSize) const
+void FramebufferRunnable::DrawLinesFan(bool connectFirstLast, uint lastPointSize) const
 {
 	Utils::PushColor(GetRenderer());
 	SDL_SetRenderDrawColor(GetRenderer(), GetR(FILL_COLOR), GetG(FILL_COLOR), GetB(FILL_COLOR), GetA(FILL_COLOR));
@@ -72,7 +72,7 @@ void FramebufferRunnable::DrawLinesFan(bool connectFirstLast, unsigned int lastP
 		Utils::DrawPoint(rend, x + size - (x % size), y + size - (y % size), size);
 	};
 
-	for (unsigned int i = 1; i <= NumberOfFilledPoints(); i++) {
+	for (uint i = 1; i <= NumberOfFilledPoints(); i++) {
 		auto p0 = GetPoint(i - 1).ToPoint();
 		auto p1 = GetPoint(i).ToPoint();
 		Utils::DrawLineGeneric(GetRenderer(), drawPoint, p0.x, p0.y, p1.x, p1.y, GetPointSize(), 1.f);
