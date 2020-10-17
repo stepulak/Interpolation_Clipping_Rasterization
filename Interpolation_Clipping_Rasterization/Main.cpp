@@ -1,40 +1,33 @@
-/*
-	(C) 2017 Stepan Trcka
-
-	This application provides basic algorithms and examples of interpolation, clipping and rasterization.
-
-	Algorithms which can be found in this application:
-		- DDA, Bresenham line interpolation
-		- Bresenham circle/ellipse interpolation
-		- Cohen-Sutherland line clipping (interval bisection) in rectangular window
-		- Cyrus-Beck line clipping in convex polygon (which is randomly generated)
-		- Sutherland-Hodgman polygon clipping (xmax part)
-		- Line seed fill of generic polygons
-		- Pineda's algorithm for triangle rasterization (min-max mechanism)
-*/
+#include "AppSelector.h"
 
 #include <iostream>
 
 namespace {
-	const std::string BitmapFontFilename = "bitmapfont.png";
-	const std::string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:.[],-";
-}
+constexpr auto FONT_BITMAP_FILENAME = "bitmapfont.png";
+constexpr auto FONT_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:.[],-";
+constexpr auto FONT_CHAR_WIDTH = 16u;
+constexpr auto WINDOW_WIDTH = 1000;
+constexpr auto WINDOW_HEIGHT = 600;
+} // namespace
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     try {
         Utils::InitRandom();
-        SDL_Window* window;
-        SDL_Renderer* renderer;
-        Utils::InitWindowRenderer("Interpolation, clipping, rasterization", window, renderer, 1000, 600);
-        Runnable::SetupFont(std::make_unique<BitmapFont>(renderer, BitmapFontFilename, 16, DefaultAlphabet));
 
-        AppSelector d(window, renderer);
-        d.Start();
+        auto [window, renderer] = Utils::InitWindowRenderer(
+            "Interpolation, clipping, rasterization...", WINDOW_WIDTH, WINDOW_HEIGHT);
 
-        Utils::DestroyWindowRenderer(window, renderer); 
-    } 
-    catch (std::exception& ex) {
-        std::cout << "Exeption: " << ex.what() << std::endl;
+        BitmapFont font(renderer, FONT_BITMAP_FILENAME, FONT_CHAR_WIDTH, FONT_ALPHABET);
+        AppSelector selector(font, window, renderer);
+
+        selector.Run();
+    
+        Utils::DestroyWindowRenderer(window, renderer);
+    } catch (const std::exception& ex) {
+        std::cerr << "Exeption: " << ex.what() << std::endl;
+        std::cerr << "Exiting..." << std::endl;
+        return -1;
     }
     return 0;
 }

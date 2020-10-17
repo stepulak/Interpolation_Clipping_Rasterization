@@ -1,68 +1,77 @@
 #pragma once
 
-#include "Utils.h"
 #include "BitmapFont.h"
+#include "Utils.h"
 #include <memory>
 #include <sstream>
 #include <utility>
 
-// Base runnable class
+// Runnable class
+// Implements basic SDL graphics, window and input manipulation
 class Runnable {
-private:
-
-    // One common font for all Runnable classes
-    static std::unique_ptr<BitmapFont> Font;
-
-    // Handle SDL2 input
-    void HandleInput();
-
-    // Delay the app and count delta time
-    void DelayAndCountDeltaTime(Uint32 ticks1, Uint32 ticks2);
-
-    SDL_Window* m_window;
-    SDL_Renderer* m_renderer;
-    float m_deltaTime;
-    bool m_shouldQuit;
-    
 public:
+    static constexpr auto FPS = 24u;
 
-    static const int FPS = 30;
-    static void SetupFont(std::unique_ptr<BitmapFont>&& bf) { Font.swap(bf); }
+    Runnable(const BitmapFont& font, SDL_Window* w, SDL_Renderer* r);
 
-    Runnable(SDL_Window* w, SDL_Renderer* r);
-    virtual ~Runnable() {}
+    virtual ~Runnable() = default;
 
-    void Start();
-    virtual void UpdateContent() {}
-    virtual void DrawContent() const = 0;
-    
-protected:
-
-    template<typename ...Args>
-    static void DrawText(Args&&... args) 
+    SDL_Window* GetWindow() const
     {
-        if (Font.get() != nullptr) {
-            Font->DrawLine(std::forward<decltype(args)>(args)...);
-        }
-        else {
-            throw std::runtime_error("Font is not initialized");
-        }
+        return m_window;
     }
 
-    SDL_Window* GetWindow() const { return m_window; }
-    SDL_Renderer* GetRenderer() const { return m_renderer; }
-    float GetDeltaTime() const { return m_deltaTime; }
+    SDL_Renderer* GetRenderer() const
+    {
+        return m_renderer;
+    }
+
+    const BitmapFont& GetFont() const
+    {
+        return m_font;
+    }
+
+    float GetDeltaTime() const
+    {
+        return m_deltaTime;
+    }
+
     int GetWindowWidth() const;
     int GetWindowHeight() const;
-    void ClearRenderer();
-
-    virtual bool HandleKeyPress(const SDL_Keycode& kc);
-    virtual bool HandleMouseClick(Uint8 button, Sint32 x, Sint32 y) { return false; }
-    virtual bool HandleMouseRelease(Uint8 button, Sint32 x, Sint32 y) { return false; }
-    virtual bool HandleMouseMotion(Sint32 x, Sint32 y) { return false; }
-
     SDL_Point GetMousePosition() const;
 
+    void Run();
+    void ClearRenderer();
+
+    virtual void UpdateContent() {}
+    virtual void DrawContent() const = 0;
+    virtual bool HandleKeyPress(const SDL_Keycode& kc);
+
+    virtual bool HandleMouseClick(uint8_t button, int x, int y)
+    {
+        return false;
+    }
+
+    virtual bool HandleMouseRelease(uint8_t button, int x, int y)
+    {
+        return false;
+    }
+
+    virtual bool HandleMouseMotion(int x, int y)
+    {
+        return false;
+    }
+
     // Get application info about input handling, it's states etc...
-    virtual std::stringstream GetAppInfo() const;
+    virtual std::string GetAppInfo() const;
+
+private:
+    const BitmapFont& m_font;
+    SDL_Window* m_window;
+    SDL_Renderer* m_renderer;
+    float m_deltaTime = 0.f;
+    bool m_shouldQuit = false;
+
+    void PollInputEvents();
+    void DelayAndCountDeltaTime(uint ticks1, uint ticks2);
 };

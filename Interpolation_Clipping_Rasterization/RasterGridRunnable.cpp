@@ -1,127 +1,122 @@
 #include "RasterGridRunnable.h"
 
-RasterGridRunnable::RasterGridRunnable(SDL_Window* w, SDL_Renderer* r, uint pointSize, uint maxPoints)
-	: Runnable(w, r),
-	m_stepMode(false),
-	m_pointSize(pointSize),
-	m_maxPoints(maxPoints)
+RasterGridRunnable::RasterGridRunnable(
+    const BitmapFont& font,
+    SDL_Window* w,
+    SDL_Renderer* r,
+    uint pointSize)
+    : Runnable(font, w, r)
+    , m_pointSize(pointSize)
 {
-	if (pointSize == 0) {
-		throw std::runtime_error("Point size cannot be 0");
-	}
-	if (maxPoints == 0) {
-		throw std::runtime_error("Maximum number of input points cannot be 0");
-	}
-	ClearPoints();
+    if (pointSize == 0) {
+        throw std::runtime_error("Point size cannot be 0");
+    }
+    ClearPoints();
 }
 
-void RasterGridRunnable::DrawPointOnMousePosition() const
+void RasterGridRunnable::DrawPointMousePosition() const
 {
-	auto&& p = GetMousePosition();
-	DrawPoint(p.x, p.y);
+    const auto p = GetMousePosition();
+    DrawPoint(p.x, p.y);
 }
 
 void RasterGridRunnable::ClearPoints()
 {
-	m_points.clear();
-	m_points.push_back(GetMousePosition());
+    m_points.clear();
+    m_points.push_back(GetMousePosition());
 }
 
 void RasterGridRunnable::DrawGrid() const
 {
-	if (m_pointSize > 1) {
-		SDL_Rect area = { 0, 0, GetWindowWidth(), GetWindowHeight() };
-		Utils::PushColor(GetRenderer());
-		SDL_SetRenderDrawColor(GetRenderer(), 200, 200, 200, 255);
-		Utils::DrawGrid(GetRenderer(), area, m_pointSize);
-		Utils::PopColor(GetRenderer());
-	}
+    if (m_pointSize <= 1) {
+        return;
+    }
+    SDL_Rect area = { 0, 0, GetWindowWidth(), GetWindowHeight() };
+    Utils::PushColor(GetRenderer());
+    SDL_SetRenderDrawColor(GetRenderer(), 200, 200, 200, 255);
+    Utils::DrawGrid(GetRenderer(), area, m_pointSize);
+    Utils::PopColor(GetRenderer());
 }
 
-bool RasterGridRunnable::HandleKeyPress(const SDL_Keycode & kc)
+bool RasterGridRunnable::HandleKeyPress(const SDL_Keycode& kc)
 {
-	if (Runnable::HandleKeyPress(kc)) {
-	}
-	else if (kc == SDLK_c) {
-		m_currentStep = 0;
-		ClearPoints();
-	}
-	else if (kc == SDLK_s) {
-		m_currentStep++;
-	}
-	else if (kc == SDLK_e) {
-		m_stepMode = !m_stepMode;
-	}
-	else {
-		return false;
-	}
+    if (Runnable::HandleKeyPress(kc)) {
+        // pass
+    } else if (kc == SDLK_c) {
+        m_currentStep = 0;
+        ClearPoints();
+    } else if (kc == SDLK_s) {
+        m_currentStep++;
+    } else if (kc == SDLK_e) {
+        m_stepMode = !m_stepMode;
+    } else {
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
-bool RasterGridRunnable::HandleMouseClick(Uint8 button, Sint32 x, Sint32 y)
+bool RasterGridRunnable::HandleMouseClick(uint8_t button, int x, int y)
 {
-	if (m_points.size() <= m_maxPoints) {
-		m_points.push_back(Point(1.f * x, 1.f * y));
-		return true;
-	}
-	return false;
+    m_points.push_back(Point(1.f * x, 1.f * y));
+    return true;
 }
 
-bool RasterGridRunnable::HandleMouseMotion(Sint32 x, Sint32 y)
+bool RasterGridRunnable::HandleMouseMotion(int x, int y)
 {
-	if (m_points.size() <= m_maxPoints) {
-		auto& p = m_points.back();
-		p.x = 1.f * x;
-		p.y = 1.f * y;
-		return true;
-	}
-	return false;
+    auto& p = m_points.back();
+    p.x = static_cast<float>(x);
+    p.y = static_cast<float>(y);
+    return true;
 }
 
-std::stringstream RasterGridRunnable::GetAppInfo() const
+std::string RasterGridRunnable::GetAppInfo() const
 {
-	auto ss = Runnable::GetAppInfo();
-	ss << "[E] STEPMODE: " << (m_stepMode ? "ACTIVE" : "INACTIVE") << '\n';
-	ss << "[S] NEXT STEP\n";
-	ss << "[C] CLEAR\n";
+    std::stringstream ss;
 
-	int pointIndex = 1;
-	for (const auto& p : m_points) {
-		if (static_cast<uint>(pointIndex) > m_maxPoints) {
-			break;
-		}
-		auto point = (p / static_cast<float>(m_pointSize)).ToPoint();
-		ss << "POINT" << pointIndex << ": [" << p.x << ", " << p.y << "]\n";
-		pointIndex++;
-	}
+    ss << Runnable::GetAppInfo();
+    ss << "[E] STEPMODE: " << (m_stepMode ? "ACTIVE" : "INACTIVE") << '\n';
+    ss << "[S] NEXT STEP\n";
+    ss << "[C] CLEAR\n";
 
-	return ss;
+    size_t pointIndex = 1u;
+    for (const auto& p : m_points) {
+        const auto point = (p / static_cast<float>(m_pointSize)).ToPoint();
+        ss << "POINT" << pointIndex << ": [" << p.x << ", " << p.y << "]\n";
+        pointIndex++;
+    }
+
+    return ss.str();
 }
 
-void RasterGridRunnable::DrawLinesFan(bool connectFirstLast, uint lastPointSize) const
+void RasterGridRunnable::DrawPoint(int x, int y) const
 {
-	Utils::DrawLineFan(GetRenderer(), m_points, m_pointSize);
-	if (connectFirstLast) {
-		auto&& f = m_points.front().ToPoint();
-		auto&& l = m_points.back().ToPoint();
-		Utils::DrawLine(GetRenderer(), f.x, f.y, l.x, l.y, m_pointSize);
-	}
-	if (lastPointSize > m_pointSize) {
-		auto&& l = m_points.back().ToPoint();
-		Utils::DrawPoint(GetRenderer(), l.x - lastPointSize/2, l.y - lastPointSize / 2, lastPointSize);
-	}
+    Utils::DrawPoint(GetRenderer(), x - (x % m_pointSize), y - (y % m_pointSize), m_pointSize);
 }
 
 void RasterGridRunnable::DrawPoints(uint pointSize) const
 {
-	if (pointSize < m_pointSize) {
-		pointSize = m_pointSize;
-	}
+    if (pointSize < m_pointSize) {
+        pointSize = m_pointSize;
+    }
 
-	for (const auto& p : m_points) {
-		auto x = static_cast<int>(p.x - pointSize / 2.f);
-		auto y = static_cast<int>(p.y - pointSize / 2.f);
-		Utils::DrawPoint(GetRenderer(), x, y, pointSize);
-	}
+    for (const auto& p : m_points) {
+        const auto x = static_cast<int>(p.x - pointSize / 2.f);
+        const auto y = static_cast<int>(p.y - pointSize / 2.f);
+        Utils::DrawPoint(GetRenderer(), x, y, pointSize);
+    }
+}
+
+void RasterGridRunnable::DrawLinesFan(bool connectFirstLast, uint lastPointSize) const
+{
+    Utils::DrawLineFan(GetRenderer(), m_points, m_pointSize);
+    if (connectFirstLast) {
+        const auto f = m_points.front().ToPoint();
+        const auto l = m_points.back().ToPoint();
+        Utils::DrawLine(GetRenderer(), f.x, f.y, l.x, l.y, m_pointSize);
+    }
+    if (lastPointSize > m_pointSize) {
+        const auto l = m_points.back().ToPoint();
+        Utils::DrawPoint(GetRenderer(), l.x - lastPointSize / 2, l.y - lastPointSize / 2, lastPointSize);
+    }
 }

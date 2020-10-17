@@ -22,7 +22,7 @@ bool LineSeedFill::HandleKeyPress(const SDL_Keycode& kc)
 	return res;
 }
 
-bool LineSeedFill::HandleMouseClick(Uint8 button, Sint32 x, Sint32 y)
+bool LineSeedFill::HandleMouseClick(uint8_t button, int x, int y)
 {
 	if (!PolygonLinesFilled() && FramebufferRunnable::HandleMouseClick(button, x, y)) {
 		return true;

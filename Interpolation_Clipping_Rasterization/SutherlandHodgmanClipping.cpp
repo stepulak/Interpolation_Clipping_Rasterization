@@ -6,7 +6,7 @@ SutherlandHodgmanClipping::SutherlandHodgmanClipping(SDL_Window* w, SDL_Renderer
 	Clear();
 }
 
-bool SutherlandHodgmanClipping::HandleMouseClick(Uint8 button, Sint32 x, Sint32 y)
+bool SutherlandHodgmanClipping::HandleMouseClick(uint8_t button, int x, int y)
 {
 	if (!m_polygonInserted) {
 		return RasterGridRunnable::HandleMouseClick(button, x, y);
@@ -19,7 +19,7 @@ bool SutherlandHodgmanClipping::HandleMouseClick(Uint8 button, Sint32 x, Sint32 
 	return false;
 }
 
-bool SutherlandHodgmanClipping::HandleMouseMotion(Sint32 x, Sint32 y)
+bool SutherlandHodgmanClipping::HandleMouseMotion(int x, int y)
 {
 	if (!m_polygonInserted) {
 		return RasterGridRunnable::HandleMouseMotion(x, y);

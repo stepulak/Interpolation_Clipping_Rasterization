@@ -16,8 +16,8 @@ private:
     bool m_pointClipped; // true if point was clipped
     bool m_drawClippingLine;
 
-    bool HandleMouseClick(Uint8 button, Sint32 x, Sint32 y) override;
-    bool HandleMouseMotion(Sint32 x, Sint32 y) override;
+    bool HandleMouseClick(uint8_t button, int x, int y) override;
+    bool HandleMouseMotion(int x, int y) override;
     bool HandleKeyPress(const SDL_Keycode& kc) override;
 
     void FindNextIntersection();

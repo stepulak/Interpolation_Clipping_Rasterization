@@ -15,18 +15,18 @@ struct Vector2 {
     T x;
     T y;
 
-    Vector2()
+    constexpr Vector2()
         : Vector2(0, 0)
     {
     }
 
-    Vector2(T x_, T y_)
+    constexpr Vector2(T x_, T y_)
         : x(x_)
         , y(y_)
     {
     }
 
-    Vector2(const SDL_Point& p)
+    constexpr Vector2(const SDL_Point& p)
         : Vector2(static_cast<T>(p.x), static_cast<T>(p.y))
     {
     }

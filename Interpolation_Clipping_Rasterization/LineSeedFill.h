@@ -5,7 +5,6 @@
 
 class LineSeedFill : public FramebufferRunnable {
 private:
-
     struct FillInfo {
         int x;
         int y;
@@ -30,10 +29,12 @@ private:
     float m_stepTimer;
 
     bool HandleKeyPress(const SDL_Keycode& kc) override;
-    bool HandleMouseClick(Uint8 button, Sint32 x, Sint32 y) override;
+    bool HandleMouseClick(uint8_t button, int x, int y) override;
 
     bool PointInGrid(int x, int y) const
-    { return x >= 0 && y >= 0 && x < static_cast<int>(FramebufferWidth()) && y < static_cast<int>(FramebufferHeight()); }
+    {
+        return x >= 0 && y >= 0 && x < static_cast<int>(FramebufferWidth()) && y < static_cast<int>(FramebufferHeight());
+    }
 
     bool CanContinueFill(int x, int y) const { return PointInGrid(x, y) && GetColor(x, y) != FILL_COLOR; }
 
@@ -47,7 +48,6 @@ private:
     void DrawAppInfo() const;
 
 public:
-
     LineSeedFill(SDL_Window* w, SDL_Renderer* r);
 
     void UpdateContent() override;

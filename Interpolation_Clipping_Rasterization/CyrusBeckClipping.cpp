@@ -1,133 +1,124 @@
 #include "CyrusBeckClipping.h"
 
-CyrusBeckClipping::CyrusBeckClipping(SDL_Window* w, SDL_Renderer* r)
-	: RasterGridRunnable(w, r, 2, 2)
+CyrusBeckClipping::CyrusBeckClipping(const BitmapFont& font, SDL_Window* w, SDL_Renderer* r)
+    : RasterGridRunnable(font, w, r, 2u)
 {
-	CreateClippingPolygon();
-	CreateClippingLines();
+    CreateClippingPolygon();
+    CreateClippingLines();
 }
 
 void CyrusBeckClipping::CreateClippingPolygon()
 {
-	int vertices = Utils::Random(POLYGON_MIN_VERTICES, POLYGON_MAX_VERTICES);
-	float anglePart = 360.f / static_cast<float>(vertices);
-	float angleMax = anglePart * 1.5f;
-	float angleMin = anglePart * 0.5f;
-	float angleCurrent = 0;
+    const size_t vertices = Utils::Random(POLYGON_MIN_VERTICES, POLYGON_MAX_VERTICES);
+    const auto anglePart = 360.f / static_cast<float>(vertices);
+    const auto angleMax = anglePart * 1.5f;
+    const auto angleMin = anglePart * 0.5f;
+    float angleCurrent = 0.f;
 
-	m_clippingPolygon.reserve(vertices + 1);
+    m_clippingPolygon.reserve(vertices + 1);
 
-	for (int i = 0; i < vertices; i++) {
-		if (360.f - angleCurrent < angleMax) {
-			angleCurrent = 360.f;
-		}
-		else {
-			angleCurrent += 1.f * Utils::Random(static_cast<int>(angleMin), static_cast<int>(angleMax));
-		}
-		auto rad = Utils::ToRadians(angleCurrent);
-		auto x = GetWindowWidth() / 2.f + POLYGON_RADIUS * cos(rad);
-		auto y = GetWindowHeight() / 2.f + POLYGON_RADIUS * sin(rad);
+    for (size_t i = 0u; i < vertices; i++) {
+        if (360.f - angleCurrent < angleMax) {
+            angleCurrent = 360.f;
+        } else {
+            angleCurrent += Utils::Random(static_cast<int>(angleMin), static_cast<int>(angleMax));
+        }
+        const auto rad = Utils::ToRadians(angleCurrent);
+        const auto x = GetWindowWidth() / 2.f + POLYGON_RADIUS * cos(rad);
+        const auto y = GetWindowHeight() / 2.f + POLYGON_RADIUS * sin(rad);
 
-		m_clippingPolygon.push_back(Point(x, y));
-	}
-	m_clippingPolygon.push_back(m_clippingPolygon.front());
+        m_clippingPolygon.emplace_back(x, y);
+    }
+
+    m_clippingPolygon.push_back(m_clippingPolygon.front());
 }
 
 void CyrusBeckClipping::CreateClippingLines()
 {
-	m_clippingLines.reserve(m_clippingPolygon.size() - 1);
+    m_clippingLines.reserve(m_clippingPolygon.size() - 1);
 
-	for (uint i = 0; i < m_clippingPolygon.size() - 1; i++) {
-		const auto& p = m_clippingPolygon[i];
-		const auto& q = m_clippingPolygon[i + 1];
-		auto&& mid = p.CountPointMiddle(q);
-		auto dirVec = Vec(p, q);
+    for (uint i = 0; i < m_clippingPolygon.size() - 1; i++) {
+        const auto& p = m_clippingPolygon[i];
+        const auto& q = m_clippingPolygon[i + 1];
+        const auto mid = p.CountPointMiddle(q);
+        const auto dirVec = Vec(p, q);
 
-		m_clippingLines.push_back({ mid + (dirVec * 10.f), mid + (dirVec * -10.f) });
-	}
+        m_clippingLines.emplace_back(mid + (dirVec * 10.f), mid + (dirVec * -10.f));
+    }
 }
 
-CyrusBeckClipping::Line CyrusBeckClipping::ClipLine(const Point & p, const Point & q, bool stepMode) const
+CyrusBeckClipping::Line CyrusBeckClipping::ClipLine(const Point& p, const Point& q, bool stepMode) const
 {
-	float tmin = 0.f;
-	float tmax = 1.f;
-	const auto pqVec = Vec(p, q);
-	auto steps = stepMode ? GetCurrentStep() : INT_MAX;
+    float tmin = 0.f;
+    float tmax = 1.f;
+    const auto pqVec = Vec(p, q);
+    auto steps = stepMode ? GetCurrentStep() : std::numeric_limits<size_t>::max();
 
-	for (uint i = 0; i < m_clippingPolygon.size() - 1 && tmin < tmax && steps > 0; i++) {
-		const auto clipLineNormal = Vec(m_clippingPolygon[i + 1], m_clippingPolygon[i]).CountNormal();
-		const auto normalsResult = clipLineNormal.Dot(pqVec);
+    for (uint i = 0; i < m_clippingPolygon.size() - 1 && tmin < tmax && steps > 0; i++) {
+        const auto clipLineNormal = Vec(m_clippingPolygon[i + 1], m_clippingPolygon[i]).CountNormal();
+        const auto normalsResult = clipLineNormal.Dot(pqVec);
 
-		if (normalsResult != 0) {
-			auto ape = Vec(m_clippingPolygon[i], p);
-			auto t0 = -1.f * clipLineNormal.Dot(ape) / normalsResult;
+        if (normalsResult != 0) {
+            const auto ape = Vec(m_clippingPolygon[i], p);
+            const auto t0 = -1.f * clipLineNormal.Dot(ape) / normalsResult;
 
-			if (normalsResult < 0) {
-				tmin = std::max(t0, tmin);
-			}
-			else { // > 0
-				tmax = std::min(t0, tmax);
-			}
-			steps--;
-		}
-	}
-	if (tmin < tmax) {
-		auto lineParam = [&](float t) {
-			return p + (pqVec * t);
-		};
-
-		return { lineParam(tmin), lineParam(tmax) };
-	}
-	return {};
+            if (normalsResult < 0) {
+                tmin = std::max(t0, tmin);
+            } else { // > 0
+                tmax = std::min(t0, tmax);
+            }
+            steps--;
+        }
+    }
+    if (tmin < tmax) {
+        return { p + (pqVec * tmin), p + (pqVec * tmax) };
+    }
+    return {};
 }
 
 void CyrusBeckClipping::DrawClippingPolygon() const
 {
-	Utils::DrawLineFan(GetRenderer(), m_clippingPolygon, POLYGON_THICKNESS);
+    Utils::DrawLineFan(GetRenderer(), m_clippingPolygon, POLYGON_THICKNESS);
 }
 
 void CyrusBeckClipping::DrawClippingLines() const
 {
-	Utils::PushColor(GetRenderer());
-	SDL_SetRenderDrawColor(GetRenderer(), 255, 0, 255, 255);
+    Utils::PushColor(GetRenderer());
+    SDL_SetRenderDrawColor(GetRenderer(), 255, 0, 255, 255);
 
-	for (const auto& l : m_clippingLines) {
-		auto&& p1 = l.first.ToPoint();
-		auto&& p2 = l.second.ToPoint();
-		SDL_RenderDrawLine(GetRenderer(), p1.x, p1.y, p2.x, p2.y);
-	}
+    for (const auto& l : m_clippingLines) {
+        auto&& p1 = l.first.ToPoint();
+        auto&& p2 = l.second.ToPoint();
+        SDL_RenderDrawLine(GetRenderer(), p1.x, p1.y, p2.x, p2.y);
+    }
 
-	Utils::PopColor(GetRenderer());
+    Utils::PopColor(GetRenderer());
 }
 
 void CyrusBeckClipping::DrawAppInfo() const
 {
-	DrawText(GetAppInfo().str(), 18, 0, 0);
+    GetFont().DrawLine(GetAppInfo(), 18, 0, 0);
 }
 
 void CyrusBeckClipping::DrawContent() const
 {
-	DrawAppInfo();
-	DrawClippingLines();
-	DrawClippingPolygon();
+    DrawAppInfo();
+    DrawClippingLines();
+    DrawClippingPolygon();
 
-	if (AllPointsFilled()) {
-		auto&& line = ClipLine(GetPoint(0), GetPoint(1), IsStepMode());
-		auto&& p1 = line.first.ToPoint();
-		auto&& p2 = line.second.ToPoint();
+    if (NumberOfFilledPoints() == 2u) {
+        const auto line = ClipLine(GetPoint(0), GetPoint(1), IsStepMode());
+        const auto p1 = line.first.ToPoint();
+        const auto p2 = line.second.ToPoint();
+        const auto pts = GetPointSize() * 4;
 
-		Utils::PushColor(GetRenderer());
-		SDL_SetRenderDrawColor(GetRenderer(), 255, 0, 0, 255);
-
-		Utils::DrawLine(GetRenderer(), p1.x, p1.y, p2.x, p2.y, GetPointSize());
-
-		auto pts = GetPointSize() * 4;
-		Utils::DrawPoint(GetRenderer(), p1.x - pts / 2, p1.y - pts / 2, pts);
-		Utils::DrawPoint(GetRenderer(), p2.x - pts / 2, p2.y - pts / 2, pts);
-
-		Utils::PopColor(GetRenderer());
-	}
-	else {
-		DrawLinesFan(false, GetPointSize() * 2);
-	}
+        Utils::PushColor(GetRenderer());
+        SDL_SetRenderDrawColor(GetRenderer(), 255, 0, 0, 255);
+        Utils::DrawLine(GetRenderer(), p1.x, p1.y, p2.x, p2.y, GetPointSize());
+        Utils::DrawPoint(GetRenderer(), p1.x - pts / 2, p1.y - pts / 2, pts);
+        Utils::DrawPoint(GetRenderer(), p2.x - pts / 2, p2.y - pts / 2, pts);
+        Utils::PopColor(GetRenderer());
+    } else {
+        DrawLinesFan(false, GetPointSize() * 2);
+    }
 }
