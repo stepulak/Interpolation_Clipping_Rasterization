@@ -100,6 +100,14 @@ void CyrusBeckClipping::DrawAppInfo() const
     GetFont().DrawLine(GetAppInfo(), 18, 0, 0);
 }
 
+bool CyrusBeckClipping::HandleMouseClick(uint8_t button, int x, int y)
+{
+    if (NumberOfFilledPoints() < 2u) {
+        return RasterGridRunnable::HandleMouseClick(button, x, y);
+    }
+    return false;
+}
+
 void CyrusBeckClipping::DrawContent() const
 {
     DrawAppInfo();

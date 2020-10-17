@@ -46,6 +46,11 @@ public:
         return m_points.size() - 1;
     }
 
+    void AddPoint(const Point& p)
+    {
+        m_points.push_back(p);
+    }
+
     void InsertPoint(const Point& p, size_t index)
     {
         m_points.insert(m_points.begin() + index, p);

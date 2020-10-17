@@ -58,7 +58,7 @@ bool RasterGridRunnable::HandleKeyPress(const SDL_Keycode& kc)
 
 bool RasterGridRunnable::HandleMouseClick(uint8_t button, int x, int y)
 {
-    m_points.push_back(Point(1.f * x, 1.f * y));
+    m_points.emplace_back(x, y);
     return true;
 }
 

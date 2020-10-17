@@ -1,5 +1,7 @@
 #include "CircleEllipseInterpolation.h"
 
+#include <iostream>
+
 CircleEllipseInterpolation::CircleEllipseInterpolation(const BitmapFont& font, SDL_Window* w, SDL_Renderer* r)
     : RasterGridRunnable(font, w, r, 4)
 {
@@ -121,8 +123,9 @@ void CircleEllipseInterpolation::DrawEllipse(float cx, float cy, float a, float 
 
     // Region1
     DrawPointEllipse4(cx, cy, x, y);
-    const auto stepsLeft = drawRegion(
-        true, static_cast<float>(GetPointSize()), static_cast<float>(GetPointSize()), steps);
+
+    const float ptSize = static_cast<float>(GetPointSize());
+    const auto stepsLeft = drawRegion(true, ptSize, -ptSize, steps);
 
     // Region 2
     if (stepsLeft > 0) {
@@ -130,7 +133,7 @@ void CircleEllipseInterpolation::DrawEllipse(float cx, float cy, float a, float 
         std::swap(aa, bb);
         std::swap(dx, dy);
         std::swap(x, y);
-        drawRegion(false, static_cast<float>(GetPointSize()), static_cast<float>(GetPointSize()), stepsLeft);
+        drawRegion(false, -ptSize, ptSize, stepsLeft);
     }
 }
 
@@ -144,7 +147,7 @@ void CircleEllipseInterpolation::DrawContent() const
         return;
     }
 
-    const bool stepMode = NumberOfFilledPoints() == 2 && IsStepMode();
+    const bool stepMode = NumberOfFilledPoints() == 2u && IsStepMode();
     const auto& p1 = GetPoint(0);
     const auto& p2 = GetPoint(1);
 

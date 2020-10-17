@@ -6,6 +6,7 @@ class CyrusBeckClipping : public RasterGridRunnable {
 public:
     CyrusBeckClipping(const BitmapFont& font, SDL_Window* w, SDL_Renderer* r);
 
+    bool HandleMouseClick(uint8_t button, int x, int y) override;
     void DrawContent() const override;
 
 private:

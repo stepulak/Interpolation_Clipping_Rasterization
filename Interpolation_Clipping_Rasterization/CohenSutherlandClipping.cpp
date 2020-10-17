@@ -96,6 +96,14 @@ void CohenSutherlandClipping::DrawClippingWindow() const
     Utils::PopColor(GetRenderer());
 }
 
+bool CohenSutherlandClipping::HandleMouseClick(uint8_t button, int x, int y)
+{
+    if (NumberOfFilledPoints() < 2u) {
+        return RasterGridRunnable::HandleMouseClick(button, x, y);
+    }
+    return false;
+}
+
 void CohenSutherlandClipping::DrawContent() const
 {
     DrawAppInfo();
