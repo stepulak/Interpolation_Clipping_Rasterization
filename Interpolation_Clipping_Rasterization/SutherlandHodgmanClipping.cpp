@@ -56,7 +56,8 @@ bool SutherlandHodgmanClipping::HandleMouseClick(uint8_t button, int x, int y)
 {
     if (!m_polygonInserted) {
         return RasterGridRunnable::HandleMouseClick(button, x, y);
-    } else if (!m_clippingLineInserted) {
+    }
+    if (!m_clippingLineInserted) {
         m_clippingLineInserted = true;
         m_clippingLineX = x;
         return true;
@@ -78,7 +79,7 @@ bool SutherlandHodgmanClipping::HandleMouseMotion(int x, int y)
 
 bool SutherlandHodgmanClipping::HandleKeyPress(const SDL_Keycode& kc)
 {
-    bool res = RasterGridRunnable::HandleKeyPress(kc);
+    const bool res = RasterGridRunnable::HandleKeyPress(kc);
 
     if (kc == SDLK_c) { // clear
         Clear();

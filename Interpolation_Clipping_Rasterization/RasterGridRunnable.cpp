@@ -38,6 +38,38 @@ void RasterGridRunnable::DrawGrid() const
     Utils::PopColor(GetRenderer());
 }
 
+void RasterGridRunnable::DrawPoint(int x, int y) const
+{
+    Utils::DrawPoint(GetRenderer(), x - (x % m_pointSize), y - (y % m_pointSize), m_pointSize);
+}
+
+void RasterGridRunnable::DrawPoints(uint pointSize) const
+{
+    if (pointSize < m_pointSize) {
+        pointSize = m_pointSize;
+    }
+
+    for (const auto& p : m_points) {
+        const auto x = static_cast<int>(p.x - pointSize / 2.f);
+        const auto y = static_cast<int>(p.y - pointSize / 2.f);
+        Utils::DrawPoint(GetRenderer(), x, y, pointSize);
+    }
+}
+
+void RasterGridRunnable::DrawLinesFan(bool connectFirstLast, uint lastPointSize) const
+{
+    Utils::DrawLineFan(GetRenderer(), m_points, m_pointSize);
+    if (connectFirstLast) {
+        const auto f = m_points.front().ToPoint();
+        const auto l = m_points.back().ToPoint();
+        Utils::DrawLine(GetRenderer(), f.x, f.y, l.x, l.y, m_pointSize);
+    }
+    if (lastPointSize > m_pointSize) {
+        const auto l = m_points.back().ToPoint();
+        Utils::DrawPoint(GetRenderer(), l.x - lastPointSize / 2, l.y - lastPointSize / 2, lastPointSize);
+    }
+}
+
 bool RasterGridRunnable::HandleKeyPress(const SDL_Keycode& kc)
 {
     if (Runnable::HandleKeyPress(kc)) {
@@ -87,36 +119,4 @@ std::string RasterGridRunnable::GetAppInfo() const
     }
 
     return ss.str();
-}
-
-void RasterGridRunnable::DrawPoint(int x, int y) const
-{
-    Utils::DrawPoint(GetRenderer(), x - (x % m_pointSize), y - (y % m_pointSize), m_pointSize);
-}
-
-void RasterGridRunnable::DrawPoints(uint pointSize) const
-{
-    if (pointSize < m_pointSize) {
-        pointSize = m_pointSize;
-    }
-
-    for (const auto& p : m_points) {
-        const auto x = static_cast<int>(p.x - pointSize / 2.f);
-        const auto y = static_cast<int>(p.y - pointSize / 2.f);
-        Utils::DrawPoint(GetRenderer(), x, y, pointSize);
-    }
-}
-
-void RasterGridRunnable::DrawLinesFan(bool connectFirstLast, uint lastPointSize) const
-{
-    Utils::DrawLineFan(GetRenderer(), m_points, m_pointSize);
-    if (connectFirstLast) {
-        const auto f = m_points.front().ToPoint();
-        const auto l = m_points.back().ToPoint();
-        Utils::DrawLine(GetRenderer(), f.x, f.y, l.x, l.y, m_pointSize);
-    }
-    if (lastPointSize > m_pointSize) {
-        const auto l = m_points.back().ToPoint();
-        Utils::DrawPoint(GetRenderer(), l.x - lastPointSize / 2, l.y - lastPointSize / 2, lastPointSize);
-    }
 }

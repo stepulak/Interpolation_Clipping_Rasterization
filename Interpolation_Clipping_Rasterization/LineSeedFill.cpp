@@ -6,15 +6,52 @@ LineSeedFill::LineSeedFill(const BitmapFont& font, SDL_Window* w, SDL_Renderer* 
     Clear();
 }
 
+void LineSeedFill::UpdateContent()
+{
+    if (!m_initSeedSet) {
+        return;
+    }
+    if (IsStepMode()) {
+        m_stepTimer += GetDeltaTime();
+        if (m_stepTimer > NEXT_STEP_TIME) {
+            m_stepTimer = 0.f;
+            PerformOneFill();
+        }
+        return;
+    }
+    while (PerformOneFill()) {
+        // pass
+    }
+}
+
+void LineSeedFill::DrawContent() const
+{
+    if (PolygonLinesFilled()) {
+        DrawFramebuffer();
+        if (!m_initSeedSet) {
+            const auto p = GetMousePosition();
+            if (SDL_PointInRect(&p, &GetDrawArea()) == SDL_TRUE) {
+                DrawPoint(p.x, p.y);
+            }
+        }
+    } else {
+        DrawLinesFan(true);
+    }
+
+    DrawFramebufferBorder();
+    DrawAppInfo();
+}
+
 bool LineSeedFill::HandleKeyPress(const SDL_Keycode& kc)
 {
-    bool res = FramebufferRunnable::HandleKeyPress(kc);
+    const bool res = FramebufferRunnable::HandleKeyPress(kc);
 
     if (kc == SDLK_w && NumberOfFilledPoints() >= 2) {
         AddPoint(GetPoint(0));
         FillPolygonLinesIntoFramebuffer();
         return true;
-    } else if (kc == SDLK_c) {
+    }
+    if (kc == SDLK_c) {
         Clear();
     }
 
@@ -25,7 +62,8 @@ bool LineSeedFill::HandleMouseClick(uint8_t button, int x, int y)
 {
     if (!PolygonLinesFilled() && FramebufferRunnable::HandleMouseClick(button, x, y)) {
         return true;
-    } else if (!m_initSeedSet) {
+    }
+    if (!m_initSeedSet) {
         const SDL_Point p = { x, y };
         const auto& area = GetDrawArea();
         if (SDL_PointInRect(&p, &area) == SDL_TRUE) {
@@ -90,39 +128,4 @@ void LineSeedFill::DrawAppInfo() const
     }
 
     GetFont().DrawLine(ss.str(), 18, 0, 0);
-}
-
-void LineSeedFill::UpdateContent()
-{
-    if (!m_initSeedSet) {
-        return;
-    }
-    if (IsStepMode()) {
-        m_stepTimer += GetDeltaTime();
-        if (m_stepTimer > NEXT_STEP_TIME) {
-            m_stepTimer = 0.f;
-            PerformOneFill();
-        }
-        return;
-    }
-    while (PerformOneFill()) {
-    }
-}
-
-void LineSeedFill::DrawContent() const
-{
-    if (PolygonLinesFilled()) {
-        DrawFramebuffer();
-        if (!m_initSeedSet) {
-            const auto p = GetMousePosition();
-            if (SDL_PointInRect(&p, &GetDrawArea()) == SDL_TRUE) {
-                DrawPoint(p.x, p.y);
-            }
-        }
-    } else {
-        DrawLinesFan(true);
-    }
-
-    DrawFramebufferBorder();
-    DrawAppInfo();
 }

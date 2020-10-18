@@ -22,7 +22,7 @@ int main(int argc, char** argv)
         AppSelector selector(font, window, renderer);
 
         selector.Run();
-    
+
         Utils::DestroyWindowRenderer(window, renderer);
     } catch (const std::exception& ex) {
         std::cerr << "Exeption: " << ex.what() << std::endl;

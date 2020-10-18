@@ -65,9 +65,9 @@ static void DrawPoint(SDL_Renderer* rend, int x, int y, int size = 1)
 
 // Count signum(value)
 template <typename T>
-static T Signum(T value)
+static int Signum(T value)
 {
-    return (value < static_cast<T>(0)) ? static_cast<T>(-1) : static_cast<T>(1);
+    return (value < static_cast<T>(0)) ? -1 : 1;
 }
 
 // Draw line with drawFunc into generic renderer

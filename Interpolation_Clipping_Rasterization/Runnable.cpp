@@ -28,23 +28,6 @@ int Runnable::GetWindowHeight() const
     return h;
 }
 
-void Runnable::ClearRenderer()
-{
-    SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
-    SDL_RenderClear(m_renderer);
-    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
-    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-}
-
-bool Runnable::HandleKeyPress(const SDL_Keycode& kc)
-{
-    if (kc == SDLK_ESCAPE) {
-        m_shouldQuit = true;
-        return true;
-    }
-    return false;
-}
-
 SDL_Point Runnable::GetMousePosition() const
 {
     SDL_Point p;
@@ -65,6 +48,23 @@ void Runnable::Run()
         SDL_RenderPresent(m_renderer);
         DelayAndCountDeltaTime(ticks, SDL_GetTicks());
     }
+}
+
+void Runnable::ClearRenderer()
+{
+    SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+    SDL_RenderClear(m_renderer);
+    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+}
+
+bool Runnable::HandleKeyPress(const SDL_Keycode& kc)
+{
+    if (kc == SDLK_ESCAPE) {
+        m_shouldQuit = true;
+        return true;
+    }
+    return false;
 }
 
 std::string Runnable::GetAppInfo() const

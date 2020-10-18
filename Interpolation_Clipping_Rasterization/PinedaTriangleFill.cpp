@@ -6,6 +6,44 @@ PinedaTriangleFill::PinedaTriangleFill(const BitmapFont& font, SDL_Window* w, SD
     Clear();
 }
 
+void PinedaTriangleFill::UpdateContent()
+{
+    if (NumberOfFilledPoints() != 3u) {
+        return;
+    }
+    if (!PolygonLinesFilled()) {
+        FillPolygonLinesIntoFramebuffer();
+        SetupInitialFillValues();
+        return;
+    }
+    if (IsStepMode()) {
+        m_timer += GetDeltaTime();
+        if (m_timer >= NEXT_STEP_TIME) {
+            m_timer = 0;
+            PerformOneFill();
+        }
+        return;
+    }
+    while (PerformOneFill()) {
+        // pass
+    }
+}
+
+void PinedaTriangleFill::DrawContent() const
+{
+    if (NumberOfFilledPoints() == 3u) {
+        DrawFramebuffer();
+        if (IsStepMode() && CanContinueFilling()) {
+            DrawCurrentPointInteractive();
+        }
+    } else {
+        DrawLinesFan(true);
+    }
+
+    DrawFramebufferBorder();
+    DrawAppInfo();
+}
+
 bool PinedaTriangleFill::HandleKeyPress(const SDL_Keycode& kc)
 {
     bool res = FramebufferRunnable::HandleKeyPress(kc);
@@ -83,41 +121,4 @@ void PinedaTriangleFill::DrawCurrentPointInteractive() const
 void PinedaTriangleFill::DrawAppInfo() const
 {
     GetFont().DrawLine(GetAppInfo(), 18, 0, 0);
-}
-
-void PinedaTriangleFill::UpdateContent()
-{
-    if (NumberOfFilledPoints() != 3u) {
-        return;
-    }
-    if (!PolygonLinesFilled()) {
-        FillPolygonLinesIntoFramebuffer();
-        SetupInitialFillValues();
-        return;
-    }
-    if (IsStepMode()) {
-        m_timer += GetDeltaTime();
-        if (m_timer >= NEXT_STEP_TIME) {
-            m_timer = 0;
-            PerformOneFill();
-        }
-        return;
-    }
-    while (PerformOneFill()) {
-    }
-}
-
-void PinedaTriangleFill::DrawContent() const
-{
-    if (NumberOfFilledPoints() == 3u) {
-        DrawFramebuffer();
-        if (IsStepMode() && CanContinueFilling()) {
-            DrawCurrentPointInteractive();
-        }
-    } else {
-        DrawLinesFan(true);
-    }
-
-    DrawFramebufferBorder();
-    DrawAppInfo();
 }

@@ -24,14 +24,6 @@ FramebufferRunnable::FramebufferRunnable(const BitmapFont& font, SDL_Window* w, 
     ClearFramebuffer();
 }
 
-void FramebufferRunnable::ClearFramebuffer()
-{
-    const auto w = m_drawArea.w / GetPointSize();
-    const auto h = m_drawArea.h / GetPointSize();
-    m_framebuffer = Framebuffer(w, FramebufferColumn(h, NONE_COLOR));
-    m_polygonLinesFilled = false;
-}
-
 bool FramebufferRunnable::HandleKeyPress(const SDL_Keycode& kc)
 {
     const bool res = RasterGridRunnable::HandleKeyPress(kc);
@@ -108,6 +100,14 @@ void FramebufferRunnable::FillPolygonLinesIntoFramebuffer()
     }
 
     m_polygonLinesFilled = true;
+}
+
+void FramebufferRunnable::ClearFramebuffer()
+{
+    const auto w = m_drawArea.w / GetPointSize();
+    const auto h = m_drawArea.h / GetPointSize();
+    m_framebuffer = Framebuffer(w, FramebufferColumn(h, NONE_COLOR));
+    m_polygonLinesFilled = false;
 }
 
 void FramebufferRunnable::DrawFramebufferBorder() const
