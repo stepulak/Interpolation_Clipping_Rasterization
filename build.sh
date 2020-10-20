@@ -1,7 +1,7 @@
 #!/bin/bash
 
 COMPILER="g++"
-CFLAGS="-std=c++17 -c"
+CFLAGS="-std=c++17 -Wall -Wextra -Wno-unused-variable -Wno-unused-parameter -Wno-unused-function -pedantic -c"
 LFLAGS="-lSDL2 -lSDL2_image"
 DIRECTORY="src/"
 CPP_FILES="*.cpp"

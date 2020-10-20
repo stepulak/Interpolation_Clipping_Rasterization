@@ -119,30 +119,22 @@ void DrawRectangle(SDL_Renderer* rend, const SDL_Rect& r, int borderThickness, b
 {
     const auto borderExpand = !borderInside ? borderThickness : 0;
     SDL_Rect borders[4] = {
-        {
-            r.x - borderExpand,
+        { r.x - borderExpand,
             r.y - borderExpand,
             r.w + borderExpand * 2,
-            borderThickness
-        },
-        {
-            r.x - borderExpand,
+            borderThickness },
+        { r.x - borderExpand,
             r.y + r.h - borderThickness + borderExpand,
             r.w + borderExpand * 2,
-            borderThickness
-        },
-        {
-            r.x - borderExpand,
+            borderThickness },
+        { r.x - borderExpand,
             r.y,
             borderThickness,
-            r.h
-        },
-        {
-            r.x + r.w - borderThickness + borderExpand,
+            r.h },
+        { r.x + r.w - borderThickness + borderExpand,
             r.y,
             borderThickness,
-            r.h
-        }
+            r.h }
     };
 
     SDL_RenderFillRects(rend, borders, 4);

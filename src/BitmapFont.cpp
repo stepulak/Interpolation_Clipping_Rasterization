@@ -5,8 +5,8 @@
 
 BitmapFont::BitmapFont(SDL_Renderer* rend, const std::string& path, int charWidth, const std::string& alphabet)
     : m_renderer(rend)
-    , m_bitmapCharWidth(charWidth)
     , m_bitmap(Utils::LoadTexture(rend, path, nullptr, &m_bitmapHeight))
+    , m_bitmapCharWidth(charWidth)
 {
     if (charWidth <= 0) {
         throw std::runtime_error("charWidth must be positive!");

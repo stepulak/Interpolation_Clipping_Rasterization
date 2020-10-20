@@ -114,7 +114,7 @@ std::string RasterGridRunnable::GetAppInfo() const
     size_t pointIndex = 1u;
     for (const auto& p : m_points) {
         const auto point = (p / static_cast<float>(m_pointSize)).ToPoint();
-        ss << "POINT" << pointIndex << ": [" << p.x << ", " << p.y << "]\n";
+        ss << "POINT" << pointIndex << ": [" << point.x << ", " << point.y << "]\n";
         pointIndex++;
     }
 

@@ -29,11 +29,11 @@ private:
     static constexpr auto VISIBLE_ALPHABET_SIZE = VISIBLE_ALPHABET_END - VISIBLE_ALPHABET_START + 1u;
 
     std::array<int, VISIBLE_ALPHABET_SIZE> m_alphabet;
+    SDL_Renderer* m_renderer;
+    SDL_Texture* m_bitmap;
     // int due to SDL2
     int m_bitmapHeight;
     int m_bitmapCharWidth;
-    SDL_Texture* m_bitmap;
-    SDL_Renderer* m_renderer;
 
     bool InsideVisibleAlphabet(char c) const
     {
