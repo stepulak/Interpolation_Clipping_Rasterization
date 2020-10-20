@@ -3,7 +3,16 @@
 #include "RasterGridRunnable.h"
 
 class CohenSutherlandClipping : public RasterGridRunnable {
+public:
+    CohenSutherlandClipping(const BitmapFont& font, SDL_Window* w, SDL_Renderer* r);
+
+    bool HandleMouseClick(uint8_t button, int x, int y) override;
+    void DrawContent() const override;
+
 private:
+    static constexpr auto WINDOW_BORDER_THICKNESS = 2;
+    static constexpr auto WINDOW_WIDTH = 300;
+    static constexpr auto WINDOW_HEIGHT = 200;
 
     enum CollisionCode {
         TOP_LEFT = 9,
@@ -17,24 +26,11 @@ private:
         BOT_RIGHT = 6
     };
 
-    static constexpr int WINDOW_BORDER_THICKNESS = 2;
-    static constexpr int WINDOW_WIDTH = 300;
-    static constexpr int WINDOW_HEIGHT = 200;
-
-    SDL_Rect m_clippingWindow;
+    const SDL_Rect m_clippingWindow;
 
     CollisionCode GetPositionCode(const Point& p) const;
-
-    // Clip line from q point
-    Point ClipSecondEndPoint(Point p, Point q, unsigned int& steps) const;
+    Point ClipSecondEndPoint(Point p, Point q, size_t& steps) const;
     Line ClipLine(const Point& p, const Point& q, bool stepMode) const;
-
     void DrawAppInfo() const;
     void DrawClippingWindow() const;
-
-public:
-
-    CohenSutherlandClipping(SDL_Window* w, SDL_Renderer* r);
-
-    void DrawContent() const override;
 };
