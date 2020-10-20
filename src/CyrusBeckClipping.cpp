@@ -7,6 +7,37 @@ CyrusBeckClipping::CyrusBeckClipping(const BitmapFont& font, SDL_Window* w, SDL_
     CreateClippingLines();
 }
 
+bool CyrusBeckClipping::HandleMouseClick(uint8_t button, int x, int y)
+{
+    if (NumberOfFilledPoints() < 2u) {
+        return RasterGridRunnable::HandleMouseClick(button, x, y);
+    }
+    return false;
+}
+
+void CyrusBeckClipping::DrawContent() const
+{
+    DrawAppInfo();
+    DrawClippingLines();
+    DrawClippingPolygon();
+
+    if (NumberOfFilledPoints() != 2u) {
+        DrawLinesFan(false, GetPointSize() * 2);
+        return;
+    }
+    const auto line = ClipLine(GetPoint(0), GetPoint(1), IsStepMode());
+    const auto p1 = line.first.ToPoint();
+    const auto p2 = line.second.ToPoint();
+    const auto pts = GetPointSize() * 4u;
+
+    Utils::PushColor(GetRenderer());
+    SDL_SetRenderDrawColor(GetRenderer(), 255, 0, 0, 255);
+    Utils::DrawLine(GetRenderer(), p1.x, p1.y, p2.x, p2.y, GetPointSize());
+    Utils::DrawPoint(GetRenderer(), p1.x - pts / 2, p1.y - pts / 2, pts);
+    Utils::DrawPoint(GetRenderer(), p2.x - pts / 2, p2.y - pts / 2, pts);
+    Utils::PopColor(GetRenderer());
+}
+
 void CyrusBeckClipping::CreateClippingPolygon()
 {
     const size_t vertices = Utils::Random(POLYGON_MIN_VERTICES, POLYGON_MAX_VERTICES);
@@ -49,9 +80,9 @@ void CyrusBeckClipping::CreateClippingLines()
 
 CyrusBeckClipping::Line CyrusBeckClipping::ClipLine(const Point& p, const Point& q, bool stepMode) const
 {
+    const auto pqVec = Vec(p, q);
     float tmin = 0.f;
     float tmax = 1.f;
-    const auto pqVec = Vec(p, q);
     auto steps = stepMode ? GetCurrentStep() : std::numeric_limits<size_t>::max();
 
     for (uint i = 0; i < m_clippingPolygon.size() - 1 && tmin < tmax && steps > 0; i++) {
@@ -97,36 +128,5 @@ void CyrusBeckClipping::DrawClippingLines() const
 
 void CyrusBeckClipping::DrawAppInfo() const
 {
-    GetFont().DrawLine(GetAppInfo(), 18, 0, 0);
-}
-
-bool CyrusBeckClipping::HandleMouseClick(uint8_t button, int x, int y)
-{
-    if (NumberOfFilledPoints() < 2u) {
-        return RasterGridRunnable::HandleMouseClick(button, x, y);
-    }
-    return false;
-}
-
-void CyrusBeckClipping::DrawContent() const
-{
-    DrawAppInfo();
-    DrawClippingLines();
-    DrawClippingPolygon();
-
-    if (NumberOfFilledPoints() == 2u) {
-        const auto line = ClipLine(GetPoint(0), GetPoint(1), IsStepMode());
-        const auto p1 = line.first.ToPoint();
-        const auto p2 = line.second.ToPoint();
-        const auto pts = GetPointSize() * 4;
-
-        Utils::PushColor(GetRenderer());
-        SDL_SetRenderDrawColor(GetRenderer(), 255, 0, 0, 255);
-        Utils::DrawLine(GetRenderer(), p1.x, p1.y, p2.x, p2.y, GetPointSize());
-        Utils::DrawPoint(GetRenderer(), p1.x - pts / 2, p1.y - pts / 2, pts);
-        Utils::DrawPoint(GetRenderer(), p2.x - pts / 2, p2.y - pts / 2, pts);
-        Utils::PopColor(GetRenderer());
-    } else {
-        DrawLinesFan(false, GetPointSize() * 2);
-    }
+    GetFont().DrawText(GetAppInfo(), 0, 0);
 }

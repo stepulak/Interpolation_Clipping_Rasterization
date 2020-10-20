@@ -11,6 +11,33 @@ CohenSutherlandClipping::CohenSutherlandClipping(const BitmapFont& font, SDL_Win
 {
 }
 
+bool CohenSutherlandClipping::HandleMouseClick(uint8_t button, int x, int y)
+{
+    if (NumberOfFilledPoints() < 2u) {
+        return RasterGridRunnable::HandleMouseClick(button, x, y);
+    }
+    return false;
+}
+
+void CohenSutherlandClipping::DrawContent() const
+{
+    DrawAppInfo();
+
+    if (NumberOfFilledPoints() != 2u) {
+        DrawLinesFan(false, GetPointSize() * 2);
+    } else {
+        const auto line = ClipLine(GetPoint(0), GetPoint(1), IsStepMode());
+        const auto f = line.first.ToPoint();
+        const auto s = line.second.ToPoint();
+        const auto ptSize = GetPointSize();
+        Utils::DrawLine(GetRenderer(), f.x, f.y, s.x, s.y, ptSize);
+        Utils::DrawPoint(GetRenderer(), f.x - ptSize, f.y - ptSize, ptSize * 2);
+        Utils::DrawPoint(GetRenderer(), s.x - ptSize, s.y - ptSize, ptSize * 2);
+    }
+
+    DrawClippingWindow();
+}
+
 CohenSutherlandClipping::CollisionCode CohenSutherlandClipping::GetPositionCode(const Point& p) const
 {
     const auto wx = m_clippingWindow.x;
@@ -21,19 +48,26 @@ CohenSutherlandClipping::CollisionCode CohenSutherlandClipping::GetPositionCode(
     // Maybe a little bit overcomplicated...
     if (p.x < wx && p.y < wy) {
         return TOP_LEFT;
-    } else if (p.x > wx + ww && p.y < wy) {
+    }
+    if (p.x > wx + ww && p.y < wy) {
         return TOP_RIGHT;
-    } else if (p.x > wx && p.x < wx + ww && p.y < wy) {
+    }
+    if (p.x > wx && p.x < wx + ww && p.y < wy) {
         return TOP_MID;
-    } else if (p.x < wx && p.y > wy + wh) {
+    }
+    if (p.x < wx && p.y > wy + wh) {
         return BOT_LEFT;
-    } else if (p.x > wx + ww && p.y > wy + wh) {
+    }
+    if (p.x > wx + ww && p.y > wy + wh) {
         return BOT_RIGHT;
-    } else if (p.x > wx && p.x < wx + ww && p.y > wy + wh) {
+    }
+    if (p.x > wx && p.x < wx + ww && p.y > wy + wh) {
         return BOT_MID;
-    } else if (p.x < wx && p.y > wy && p.y < wy + wh) {
+    }
+    if (p.x < wx && p.y > wy && p.y < wy + wh) {
         return MID_LEFT;
-    } else if (p.x > wx + ww && p.y > wy && p.y < wy + wh) {
+    }
+    if (p.x > wx + ww && p.y > wy && p.y < wy + wh) {
         return MID_RIGHT;
     }
     return MID;
@@ -54,10 +88,9 @@ CohenSutherlandClipping::Point CohenSutherlandClipping::ClipSecondEndPoint(Point
             if ((GetPositionCode(m) & GetPositionCode(p)) != MID) {
                 q = p;
                 break;
-            } else {
-                q = m;
-                steps--;
             }
+            q = m;
+            steps--;
         } else {
             p = m;
             steps--;
@@ -85,7 +118,7 @@ CohenSutherlandClipping::Line CohenSutherlandClipping::ClipLine(const Point& p, 
 
 void CohenSutherlandClipping::DrawAppInfo() const
 {
-    GetFont().DrawLine(GetAppInfo(), 18, 0, 0);
+    GetFont().DrawText(GetAppInfo(), 0, 0);
 }
 
 void CohenSutherlandClipping::DrawClippingWindow() const
@@ -94,31 +127,4 @@ void CohenSutherlandClipping::DrawClippingWindow() const
     SDL_SetRenderDrawColor(GetRenderer(), 255, 0, 0, 255);
     Utils::DrawRectangle(GetRenderer(), m_clippingWindow, WINDOW_BORDER_THICKNESS, false);
     Utils::PopColor(GetRenderer());
-}
-
-bool CohenSutherlandClipping::HandleMouseClick(uint8_t button, int x, int y)
-{
-    if (NumberOfFilledPoints() < 2u) {
-        return RasterGridRunnable::HandleMouseClick(button, x, y);
-    }
-    return false;
-}
-
-void CohenSutherlandClipping::DrawContent() const
-{
-    DrawAppInfo();
-
-    if (NumberOfFilledPoints() == 2u) {
-        const auto line = ClipLine(GetPoint(0), GetPoint(1), IsStepMode());
-        const auto f = line.first.ToPoint();
-        const auto s = line.second.ToPoint();
-        const auto ptSize = GetPointSize();
-        Utils::DrawLine(GetRenderer(), f.x, f.y, s.x, s.y, ptSize);
-        Utils::DrawPoint(GetRenderer(), f.x - ptSize, f.y - ptSize, ptSize * 2);
-        Utils::DrawPoint(GetRenderer(), s.x - ptSize, s.y - ptSize, ptSize * 2);
-    } else {
-        DrawLinesFan(false, GetPointSize() * 2);
-    }
-
-    DrawClippingWindow();
 }

@@ -17,7 +17,8 @@ FramebufferRunnable::FramebufferRunnable(const BitmapFont& font, SDL_Window* w, 
 
     if (drawArea.x >= ww || drawArea.y >= wh) {
         throw std::runtime_error("Draw area invalid position");
-    } else if (drawArea.x + drawArea.w >= ww || drawArea.y + drawArea.h >= wh) {
+    }
+    if (drawArea.x + drawArea.w >= ww || drawArea.y + drawArea.h >= wh) {
         throw std::runtime_error("Draw area invalid proportions");
     }
 

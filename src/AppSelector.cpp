@@ -56,5 +56,5 @@ void AppSelector::DrawAppInfo() const
     ss << "  [H] LINE SEED POLYGON FILLING\n";
     ss << "  [J] PINEDA TRIANGLE FILLING\n";
 
-    GetFont().DrawLine(ss.str(), 18, 50, 30);
+    GetFont().DrawText(ss.str(), 50, 30);
 }

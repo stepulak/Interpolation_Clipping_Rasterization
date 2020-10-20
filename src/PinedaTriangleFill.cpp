@@ -120,5 +120,5 @@ void PinedaTriangleFill::DrawCurrentPointInteractive() const
 
 void PinedaTriangleFill::DrawAppInfo() const
 {
-    GetFont().DrawLine(GetAppInfo(), 18, 0, 0);
+    GetFont().DrawText(GetAppInfo(), 0, 0);
 }

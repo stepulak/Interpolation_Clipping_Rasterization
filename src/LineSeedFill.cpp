@@ -127,5 +127,5 @@ void LineSeedFill::DrawAppInfo() const
         ss << "[W] SAVE POLY. VERTICES\n";
     }
 
-    GetFont().DrawLine(ss.str(), 18, 0, 0);
+    GetFont().DrawText(ss.str(), 0, 0);
 }

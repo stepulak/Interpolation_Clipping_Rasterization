@@ -9,7 +9,7 @@ public:
     void DrawContent() const override;
 
 private:
-    bool m_circleInterpolation = true;
+    bool m_circleInterpolation = true; // false for ellipse interpolation
 
     bool HandleKeyPress(const SDL_Keycode& kc) override;
     void DrawAppInfo() const;

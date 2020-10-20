@@ -5,6 +5,27 @@ DDABresenhamLineInterpolation::DDABresenhamLineInterpolation(const BitmapFont& f
 {
 }
 
+void DDABresenhamLineInterpolation::DrawContent() const
+{
+    DrawGrid();
+    DrawAppInfo();
+
+    if (NumberOfFilledPoints() == 0) {
+        DrawPointMousePosition();
+        return;
+    }
+
+    const bool stepMode = NumberOfFilledPoints() == 2u && IsStepMode();
+    const auto p1 = GetPoint(0).ToPoint();
+    const auto p2 = GetPoint(1).ToPoint();
+
+    if (m_ddaInterpolation) {
+        DrawDDA(p1.x, p1.y, p2.x, p2.y, stepMode);
+    } else {
+        DrawBresenham(p1.x, p1.y, p2.x, p2.y, stepMode);
+    }
+}
+
 bool DDABresenhamLineInterpolation::HandleKeyPress(const SDL_Keycode& kc)
 {
     if (RasterGridRunnable::HandleKeyPress(kc)) {
@@ -22,7 +43,7 @@ void DDABresenhamLineInterpolation::DrawAppInfo() const
     std::stringstream ss;
     ss << GetAppInfo();
     ss << "[W] LINE ALGORITHM: " << (m_ddaInterpolation ? "DDA" : "BRESENHAM") << '\n';
-    GetFont().DrawLine(ss.str(), 18, 0, 0);
+    GetFont().DrawText(ss.str(), 0, 0);
 }
 
 void DDABresenhamLineInterpolation::DrawDDA(int x0, int y0, int x1, int y1, bool stepMode) const
@@ -91,25 +112,4 @@ void DDABresenhamLineInterpolation::DrawBresenham(int x0, int y0, int x1, int y1
             e--;
         }
     }
-}
-
-void DDABresenhamLineInterpolation::DrawContent() const
-{
-    DrawGrid();
-    DrawAppInfo();
-
-    if (NumberOfFilledPoints() == 0) {
-        DrawPointMousePosition();
-		return;
-	}
-
-	const bool stepMode = NumberOfFilledPoints() == 2u && IsStepMode();
-	const auto p1 = GetPoint(0).ToPoint();
-	const auto p2 = GetPoint(1).ToPoint();
-
-	if (m_ddaInterpolation) {
-		DrawDDA(p1.x, p1.y, p2.x, p2.y, stepMode);
-	} else {
-		DrawBresenham(p1.x, p1.y, p2.x, p2.y, stepMode);
-	}
 }

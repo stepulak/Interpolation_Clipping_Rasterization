@@ -7,9 +7,34 @@ CircleEllipseInterpolation::CircleEllipseInterpolation(const BitmapFont& font, S
 {
 }
 
+void CircleEllipseInterpolation::DrawContent() const
+{
+    DrawGrid();
+    DrawAppInfo();
+
+    if (NumberOfFilledPoints() == 0) {
+        DrawPointMousePosition();
+        return;
+    }
+
+    const bool stepMode = NumberOfFilledPoints() == 2u && IsStepMode();
+    const auto& p1 = GetPoint(0);
+    const auto& p2 = GetPoint(1);
+
+    if (m_circleInterpolation) {
+        const auto r = SDL_abs(static_cast<int>((p1 - p2).GetLength()));
+        DrawCircle(static_cast<int>(p1.x), static_cast<int>(p1.y), r, stepMode);
+    } else { // ellipse interpolation
+        const float a = static_cast<float>(SDL_fabs(p2.x - p1.x));
+        const float b = static_cast<float>(SDL_fabs(p2.y - p1.y));
+        DrawEllipse(p1.x, p1.y, a, b, stepMode);
+    }
+}
+
 bool CircleEllipseInterpolation::HandleKeyPress(const SDL_Keycode& kc)
 {
     if (RasterGridRunnable::HandleKeyPress(kc)) {
+        // pass
     } else if (kc == SDLK_w) {
         m_circleInterpolation = !m_circleInterpolation;
     } else {
@@ -23,7 +48,7 @@ void CircleEllipseInterpolation::DrawAppInfo() const
     std::stringstream ss;
     ss << GetAppInfo();
     ss << "[W] SHAPE: " << (m_circleInterpolation ? "CIRCLE" : "ELLIPSE") << '\n';
-    GetFont().DrawLine(ss.str(), 18, 0, 0);
+    GetFont().DrawText(ss.str(), 0, 0);
 }
 
 void CircleEllipseInterpolation::DrawPointCircle8(int x, int y, int dx, int dy) const
@@ -40,10 +65,10 @@ void CircleEllipseInterpolation::DrawPointCircle8(int x, int y, int dx, int dy) 
 
 void CircleEllipseInterpolation::DrawPointEllipse4(float x, float y, float dx, float dy) const
 {
-    int ix = static_cast<int>(x);
-    int iy = static_cast<int>(y);
-    int idx = static_cast<int>(dx);
-    int idy = static_cast<int>(dy);
+    const int ix = static_cast<int>(x);
+    const int iy = static_cast<int>(y);
+    const int idx = static_cast<int>(dx);
+    const int idy = static_cast<int>(dy);
 
     DrawPoint(ix + idx, iy + idy);
     DrawPoint(ix + idx, iy - idy);
@@ -134,29 +159,5 @@ void CircleEllipseInterpolation::DrawEllipse(float cx, float cy, float a, float 
         std::swap(dx, dy);
         std::swap(x, y);
         drawRegion(false, -ptSize, ptSize, stepsLeft);
-    }
-}
-
-void CircleEllipseInterpolation::DrawContent() const
-{
-    DrawGrid();
-    DrawAppInfo();
-
-    if (NumberOfFilledPoints() == 0) {
-        DrawPointMousePosition();
-        return;
-    }
-
-    const bool stepMode = NumberOfFilledPoints() == 2u && IsStepMode();
-    const auto& p1 = GetPoint(0);
-    const auto& p2 = GetPoint(1);
-
-    if (m_circleInterpolation) {
-        const auto r = SDL_abs(static_cast<int>((p1 - p2).GetLength()));
-        DrawCircle(static_cast<int>(p1.x), static_cast<int>(p1.y), r, stepMode);
-    } else {
-        const float a = static_cast<float>(SDL_fabs(p2.x - p1.x));
-        const float b = static_cast<float>(SDL_fabs(p2.y - p1.y));
-        DrawEllipse(p1.x, p1.y, a, b, stepMode);
     }
 }
