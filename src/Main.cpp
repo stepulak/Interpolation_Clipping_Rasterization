@@ -3,7 +3,7 @@
 #include <iostream>
 
 namespace {
-constexpr auto FONT_BITMAP_FILENAME = "bitmapfont.png";
+constexpr auto FONT_BITMAP_FILENAME = "assets/bitmapfont.png";
 constexpr auto FONT_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:.[],-";
 constexpr auto FONT_CHAR_WIDTH = 16u;
 constexpr auto WINDOW_WIDTH = 1280;
